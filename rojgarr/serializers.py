@@ -13,6 +13,11 @@ class RegisterSerializer(serializers.ModelSerializer):
         model = Register_Detail
         fields = '__all__'
 
+class RegisterCompanySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Register_Company_Detail
+        fields = '__all__'
+
 class LoginSerilizer(serializers.Serializer):
     email = serializers.EmailField()
     password = serializers.CharField()

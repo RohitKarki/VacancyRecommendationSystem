@@ -112,3 +112,32 @@
 	color: #318cbf;
 	text-align: left;
 }
+
+/* for pagination */
+.pagination{
+	text-align: center;
+	margin-top: 1em;
+}
+.pagination_action{
+	margin: 0 0.1em;
+	display: inline-block;
+	padding: 0.5em;
+	color: #6D85C7;;
+	font-size: 1.3em;
+}
+.pagination_action:hover{
+	color: #3354AA;
+
+}
+.pagination_number{
+	background-color: #6D85C7;
+	padding: 0.5em 0.8em;
+	color: #fff;
+	border-radius: 13px;
+}
+.pagination_current{
+	margin-right: 0.5em;
+}
+.pagination_number:hover, .pagination_current{
+	background-color: #3354AA;
+}

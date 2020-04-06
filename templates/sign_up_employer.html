@@ -1,12 +1,10 @@
-{% extends 'basic_page.html' %}
+{% extends 'employer_site.html' %}
 {% load staticfiles%}
 
 {% block content%}
-
-
 	<!-- Page Header -->
 	<section class="page_heading">
-		<h3 class="page-heading">SIGN UP</h3>
+		<h3 class="page-heading">EMPLOYER SIGN UP</h3>
 	</section>
 	<!-- Page Header Ends -->
 
@@ -19,11 +17,21 @@
 		<div class="con-1">
 			<form id = "forms" action="{% url 'register' %}" method="POST">
 				{% csrf_token %}
-				{{ signup_form.full_name}}
+				{{ signup_form.}}
 				<br/>
 				{{ signup_form.email }}
 				<br/>
 				{{ signup_form.email_password }}
+				<br/>
+                <h3>Company Address</h3></br>
+				{{ signup_form.location }}
+				<br/>
+				
+                <h3>Company Name</h3></br>
+				{{ signup_form.bussiness }}
+				<br/>
+				<h3>Phone Number</h3></br>
+				{{ signup_form.contact }}
 				<br/>
 				{% if messages %}
 				{% for message in messages %}
@@ -39,5 +47,4 @@
 
 		<!-- Page Content Ends   -->
 	</section>
-
 {% endblock %}

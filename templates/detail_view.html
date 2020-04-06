@@ -1,0 +1,96 @@
+{% extends 'basic_page.html' %}
+{% load static %}
+
+{% block content%}
+
+	<!-- Banner Starts -->
+	<section>
+
+	</section>
+	<!-- Banner Ends -->
+
+	<!-- Feature Highlights Start -->
+	<article class="feature_wrapper">
+		<div class="view_detail">
+            <div>
+                <h2 style="font-size: 30px; background-color: rgb(26, 127, 194); margin: 4px auto; padding: 5px;">{{ v_detail.job_title }}</h2>
+                <h5>{{ v_detail.job_category }}</h5>
+                </br><h4> Organization : {{ v_detail.company }}</h4>
+                {{ v_detail.company.company_address }}
+
+            <div>
+                
+            <div><br/><br/>
+            <div>
+                <h3> Qualification and Experience: </h3>
+                {{ v_detail.qualification_and_experience}}
+            <br/><br/>
+            <div>
+            <h3> Responsibility: </h3>
+                {{ v_detail.task_and_responsibilities}}
+            <br/><br/>
+            <h3> Work Type: </h3>
+                {{ v_detail.work_type}}
+            <br/><br/>
+            <h3> Payment Type: </h3>
+                {{ v_detail.payment_type}}
+            <br/><br/>
+            <h3> Salary: </h3>
+                {{ v_detail.range_of_salary}}
+            <br/><br/>
+            <h3> Additiinal Services: </h3>
+                {{ v_detail.plus_services}}
+            <br/><br/>
+    	<div class="space">
+            <div class="wrapper">
+                <button class="butt" ><h4>Apply for Job</h4></button>
+            </div>
+        </div>
+
+
+	</article>
+	<!-- Feature Highlight ends -->
+
+
+
+
+	<!-- Latest Projects Section Starts -->
+	<div class="space" style="margin:12px">
+    </div>
+	<section class="latest_projects_wrapper">
+		<h3 class="page_heading_home">Advertisement</h3>
+		<div class="project_container">
+			<!-- Main Project -->
+			<div class="project_thumb_wrapper">
+				<p><a href="#"><b>Just Img.com</b></a></p>
+				<img src="{% static 'images/p1.jpg' %}" />
+				<p> short description</p>
+			</div>
+			<!-- Main Project ends -->
+
+			<!-- Main Project -->
+			<div class="project_thumb_wrapper">
+				<p><a href="#"><b>Just Img.com</b></a></p>
+				<img src="{% static 'images/p1.jpg' %}" />
+				<p> short description</p>
+			</div>
+			<!-- Main Project ends -->
+
+			<!-- Main Project -->
+			<div class="project_thumb_wrapper">
+				<p><a href="#"><b>Just Img.com</b></a></p>
+				<img src="{% static 'images/p1.jpg' %}" />
+				<p> short description</p>
+			</div>
+			<!-- Main Project ends -->
+
+			<!-- Main Project -->
+			<div class="project_thumb_wrapper">
+				<p><a href="#"><b>Just Img.com</b></a></p>
+				<img src="{% static 'images/p1.jpg' %}" />
+				<p> short description</p>
+			</div>
+			<!-- Main Project ends -->
+		</div>
+	</section>
+{% endblock %}

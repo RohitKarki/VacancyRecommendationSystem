@@ -1,0 +1,65 @@
+{% extends 'employer_site.html' %}
+{% load staticfiles%}
+
+{% block content%}
+	<section class="page_heading">
+		<h3 class="page-heading">EMPLOYER LOG IN</h3>
+	</section>
+    <section class="page-container">
+
+        <!-- Page Content Starts -->
+        <br/><br/>
+
+        
+        <div class="con-1">
+            <form id = "forms" action="{% url 'verified_login' %}" method="POST">
+                {% csrf_token %}
+                {{ login_form.email }}
+                <br/>
+                {{ login_form.email_password }}
+                <br/>
+                {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+                {% endif %}
+                <br/> <br/>
+                <input name="send" type="submit" value="Log in" class="main_button" id="button">
+            </form>
+        </div>
+
+        <!-- Page Content Ends   -->
+    </section>
+
+    <section class="latest_projects_wrapper">
+        <h3 class="page_heading_home">Why choose Rojgarr</h3>
+        <div class="project_container">
+            <!-- Main Project -->
+            <div class="project_thumb_wrapper">
+                <p> Connect with the huge number of people from our database.</p>
+            </div>
+            <!-- Main Project ends -->
+
+            <!-- Main Project -->
+            <div class="project_thumb_wrapper">
+                <p> Eligible candidate are refine and recommend you.</p>
+            </div>
+            <!-- Main Project ends -->
+
+            <!-- Main Project -->
+            <div class="project_thumb_wrapper">
+                <p> short description</p>
+            </div>
+            <!-- Main Project ends -->
+
+            <!-- Main Project -->
+            <div class="project_thumb_wrapper">
+                <p> short description</p>
+            </div>
+            <!-- Main Project ends -->
+        </div>
+    </section>
+    <!-- Footer Starts -->
+{% endblock %}

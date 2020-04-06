@@ -6,16 +6,35 @@ from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
 # Create your models here.
-class Vacancy_Detail(models.Model):
+class Register_Company_Detail(models.Model):
     company_name = models.CharField(max_length=50)
     company_address = models.CharField( max_length=50)
-    skill = models.CharField( max_length=50)
-    salary = models.IntegerField()
-    urgent = models.BooleanField(default=False)
-    date_added = models.DateTimeField(default=timezone.now)
+    company_contact = models.CharField(max_length=10)
+    company_email = models.CharField( max_length=100 )
+    company_password = models.CharField( max_length=50 )
+    company_date_added = models.DateTimeField(default=timezone.now )
+    # address_latitude = models.DecimalField(max_digits=9, decimal_places=6)
+    # address_longitude = models.DecimalField(max_digits=9, decimal_places=6)
     
     def __str__(self):
         return self.company_name
+
+class Vacancy_Detail(models.Model):
+    company = models.ForeignKey(Register_Company_Detail, on_delete=models.CASCADE, blank = True, null = True)
+    job_category = models.CharField(max_length=50)
+    job_title = models.CharField(max_length=50)
+    work_type = models.CharField(max_length=20)
+    payment_type = models.CharField(max_length=50)
+    range_of_salary = models.IntegerField()
+    plus_services = models.CharField( max_length=200)
+    task_and_responsibilities = models.TextField(max_length=200)
+    qualification_and_experience = models.TextField(max_length=300)
+    expiry_date = models.DateTimeField()
+    date_added = models.DateTimeField(default=timezone.now)
+    
+    def __str__(self):
+        return self.job_title
+
 
 class Register_Detail(models.Model):
     full_name = models.CharField(max_length=50)
@@ -34,7 +53,11 @@ class Register_Detail(models.Model):
     
 
 class Advertisement_Detail(models.Model):
+    advertiser_name = models.CharField(max_length=50)
     link = models.CharField(max_length=60)
     image = models.ImageField(upload_to=None, height_field=None, width_field=None, max_length=None)
     short_description = models.CharField(max_length= 200)
-    
+    date_added = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.advertiser_name

@@ -1,0 +1,61 @@
+{% extends 'employer_site.html' %}
+{% load staticfiles%}
+
+{% block content%}
+<!-- Page Header -->
+	<section class="page_heading">
+		<h3 class="page-heading">CREATE JOB</h3>
+	</section>
+	<!-- Page Header Ends -->
+
+	<section class="page-container">
+
+		<!-- Page Content Starts -->
+		<br/><br/>
+
+		
+		<div class="con-1">
+			<form id = "forms" action="{% url 'add_vacancy' %}" method="POST">
+				{% csrf_token %}
+                <h3>Job Category</h3></br>
+				{{ vacancy_announce_form.catagories }}
+				<br/>
+                <h3>Job Title</h3></br>
+				{{ vacancy_announce_form.job_title }}
+				<br/>
+                <h3>Work Type</h3></br>
+				{{ vacancy_announce_form.work_type }}
+				<br/>
+                <h3>Payment Type</h3></br>
+				{{ vacancy_announce_form.payment_type }}
+				<br/>
+                <h3>Salary</h3></br>
+				{{ vacancy_announce_form.salary }}
+				<br/>
+                <h3>Addition Services</h3></br>
+				{{ vacancy_announce_form.plus_services }}
+				<br/>
+                <h3>Qualifications</h3></br>
+				{{ vacancy_announce_form.qualifiactions }}
+				<br/>
+                <h3>Task and Responsibilities</h3></br>
+				{{ vacancy_announce_form.responsibilities }}
+				<br/>
+                <h3>Expiry Date</h3></br>
+				{{ vacancy_announce_form.end_date }}
+                </br>
+				{% if messages %}
+				{% for message in messages %}
+					<div class="alert alert-danger" role="alert">
+						{{ message }}
+					</div>
+				{% endfor %}
+				{% endif %}
+				<br/> <br/>
+				<input name="send" type="submit" value="Announce it !" class="main_button" id="button">
+			</form>
+		</div>
+
+		<!-- Page Content Ends   -->
+	</section>
+{% endblock %}

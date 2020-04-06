@@ -335,7 +335,7 @@
 .page-quote
 {
 	text-align: center;
-	margin-top: 210px;
+	margin-top: 23px;
 }
 
 .page-container
@@ -480,4 +480,31 @@ p{
 .Agreement-contain{
 	width: 100%;
 	text-align: center;
+}
+/* detail_view */
+
+.view_detail{
+	background-color: #eaeaea;
+	margin-left: 73px;
+    margin-right: 79px;
+}
+.wrapper {
+    text-align: left;
+}
+
+.butt {
+	position: absolute;
+	background-color: #ff2603;
+    padding: 10px;
+	margin-top: 14px;
+	color: #fff;
+    font-size: medium;
+    
+}
+.butt:hover{
+	color: rgb(251, 255, 0);
+    background-color: rgb(26, 127, 194);
+    background-size: 1cm;
+	font-family: bold;
+	cursor: pointer;
 }

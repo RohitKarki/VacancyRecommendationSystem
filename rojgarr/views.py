@@ -9,20 +9,39 @@ from .serializers import *
 from .forms import *
 from rest_framework import status
 from django.contrib import messages
-import requests
+import requests, json, googlemaps
+import geopy.geocoders as geocoders 
+from geopy.geocoders import Nominatim
+
+from rest_framework.status import (
+    HTTP_400_BAD_REQUEST,
+    HTTP_200_OK
+)
 #from django.urls import reverse_lazy
 # Create your views here.
 #class vacancies(viewsets.ModelViewSet):
 #        queryset = Vacancy_Detail.objects.all()
 #        serializer_class = vacancySerializer
+from django.core.paginator import Paginator
 
 def header(request):    
         return render(request, 'header.html')
 
 def home(request):
+
+    queryset = Vacancy_Detail.objects.select_related('company')
+    obj1 = []
+    for i in queryset:
+        obj1.append({'pk':i.id, 'job_category': i.job_category, 'job_title': i.job_title, 'range_of_salary': i.range_of_salary, 'expiry_date': i.expiry_date, 'company_name': i.company.company_name, 'company_address': i.company.company_address})
+    if not obj1:
+        messages.success(request, "No any job is available.")  
     form = SearchForm()
-    vacancies = Vacancy_Detail.objects.order_by('-date_added')
-    return render(request, 'home.html',{'v_detail': vacancies,'search_form': form})
+    
+    # vacancies = Vacancy_Detail.objects.order_by('-date_added')
+    paginator = Paginator(obj1, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'home.html',{'v_detail': page_obj,'search_form': form})
 
 def signup(request):
     form = SignupForm()    
@@ -32,11 +51,41 @@ def login(request):
     form = LoginForm()
     return render(request,'login.html',{'login_form':form})
 
+def employer_part(request):
+    form = LoginForm()
+    return render(request,'log_in_employer.html',{'login_form':form})
+
+def register_employer(request):
+    form = SignupForm()
+    return render(request, 'sign_up_employer.html',{'signup_form': form})  
+
+def create_job(request):
+    form = VacancyAnnounceForm()
+    return render(request, 'vacancy_announcement.html',{'vacancy_announce_form': form})  
+
+def des (request, pk):
+    # v = Vacancy_Detail.objects.get(id=pk)
+
+    # return HttpResponse(v.job_category)
+    try:
+        v = Vacancy_Detail.objects.select_related('company').get(id = pk)
+        return render(request, 'detail_view.html',{'v_detail': v})
+    #     obj1 = []
+    #     for i in queryset:
+    #         if(pk == i.id):
+    #             obj1.append({'job_category': i.job_category, 'job_title': i.job_title, 'range_of_salary': i.range_of_salary, 'expiry_date': i.expiry_date, 'company_name': i.company.company_name, 'company_address': i.company.company_address})
+    #     if not obj1:
+    #         return Response({'error': True, 'Message':'No any vacancies available.'}, status = HTTP_400_BAD_REQUEST)
+    #     return Response({'error':False, 'objlist':obj1}, status = HTTP_200_OK)
+    except Vacancy_Detail.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)    
+
 class Vacancies(APIView):
     def get(self, request):
         obj = Vacancy_Detail.objects.all()
         serializer = VacancySerializer(obj , many = True)
         return Response(serializer.data)
+
     def post(self, request):
         serializer = VacancySerializer(data=request.data)
         if serializer.is_valid():
@@ -44,11 +93,12 @@ class Vacancies(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status=status.HTTP_400_BAD__REQUEST)
 
-class UserDetail(APIView):
+class User_detail(APIView):
     def get(self, request):
         obj = Register_Detail.objects.all()
         serializer = RegisterSerializer(obj , many = True)
         return Response(serializer.data)
+
     def post(self, request):
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
@@ -56,13 +106,71 @@ class UserDetail(APIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status=status.HTTP_400_BAD__REQUEST)       
 
-class RegisterUser():
-    def signup():
+class Register_user(APIView):
+    def signup(self, request):
+        form = SignupForm()    
+        return render(request, 'signup.html',{'signup_form': form}) 
+
+@api_view(['GET','POST'])
+def Search_Value(request):
+    # print(s)
+    # return render(request, 'login.html',{'login_form': LoginForm()})
+    if(request.method == 'POST'):
+        s = request.POST['catagories']
+        p = request.POST['place']  
+
+        print('a')
+        if(s != "" and p == ""):
+            url = "http://127.0.0.1:8000/Catagory/"+ s + "/Search_Vacancies"
+
+        elif(p != "" and s == ""):
+            url = "http://127.0.0.1:8000/Location/"+ p
+
+        elif(s != "" and p != ""):
+            url = "http://127.0.0.1:8000/Search_Vacancies/Catagory/Location/" + s + "/" + p
+            
+        else:
+            print('b')
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        print(url)
+        r = requests.get(url)
+        # return Response({'error':False, 'v_detail':r}, status = HTTP_200_OK)
+        # obj1 = []
+        # for i in r:
+        #     if(s == i.job_category):
+        #         obj1.append({'job_category': i.job_category, 'job_title': i.job_title, 'range_of_salary': i.range_of_salary, 'expiry_date': i.expiry_date, 'company_name': i.company.company_name, 'company_address': i.company.company_address})
+        if not r:
+            return Response({'error': True, 'Message':'No any vacancies available.'}, status = HTTP_400_BAD_REQUEST)          
+        return Response({'error':False, 'v_detail':r}, status = HTTP_200_OK)
+        json_response = r.json()
+        filter1=[]
+        filter1 = json_response  
+
+        return render(request, 'home.html',{'v_detail': filter1,'search_form': SearchForm()})
+
+
+class Call_Search(APIView):
+    def get(self, request):
+        print('a')
+        return redirect('signup')
         if request.method == 'POST':
-            pass
+            print('a')
+            return redirect('signup')
+            # s = request.POST['catagories']
+            # p = request.POST['place']
+            # a = 'http://127.0.0.1:8000/Search/'.join(s)
+            # print (p)
+            # b = "http://127.0.0.1:8000/Catagory/"+ p + "/Search_Vacancies"
+                    
+            # r = requests.get(b)
+            # print(r)
+
+            # return render(request, 'home.html',{'v_detail': r,'search_form': SearchForm()})
+            # return render(request, "http://127.0.0.1:8000/".format(skill=s, place=p))
+
 
 class Search(APIView):
-    def get(self, request, place, skill):
+    def get(self, request, skill, place):
         url = 'http://127.0.0.1:8000/Vacancies/'
         r = requests.get(url)
         json_response = r.json()
@@ -115,13 +223,9 @@ def user_detail(request):
         return Response(serializer.data)
 
     elif request.method == 'POST':
-        form = SignupForm();
 
-        if form.is_valid():
-            print('yes')
-        else:
-            print('no')      
 
+        form = SignupForm(request.POST);          
         serializer = RegisterSerializer(data=request.data)
         if serializer.is_valid():
             url ='http://127.0.0.1:8000/userdetail/'
@@ -137,20 +241,110 @@ def user_detail(request):
                     messages.success(request, "Register Successfully !")    
                     return redirect('signup') 
         else:
-            messages.success(request, "Email is not valid !")    
-            return redirect('signup') 
+            messages.success(request, "Email is not valid !")  
+            return render(request, 'signup.html',{'signup_form': form})   
+
+def location_lat_lon(address):
+# api =  "https://maps.googleapis.com/maps/api/place/nearbysearch/json
+#   ?location=-33.8670522,151.1957362
+#   &radius=500
+#   &types=food
+#   &name=harbour
+#   &key=AIzaSyAgAjrZxjYUw0LWntNYH8r3V189KZNSJV8
+    # print('ok')
+    # gmaps_key = googlemaps.Client(key="AIzaSyCICPPHTwVsFYPCHvhDbiD9S5-N-BtxP28")
+    # print(gmaps_key)
+    # geocode_result = gmaps_key.geocode(address)
+    # print('yes')
+    # try:
+    #     lat = geocode_result[0]["geometry"]["location"]["lat"]
+    #     lon = geocode_result[0]["geometry"]["location"]["lon"]
+
+    # except:
+    #     lat = None
+    #     lon = None
+
+    # print(lat)
+    # print(lon)
+    # return (lat)
+    non = Nominatim()
+    n=non.geocode(address)
+    print(n.latitude)
+    print(n.longitude)
+    li = [n.latitude, n.longitude]
+    return li
+
+
+class Search_From_Skill_Location(APIView):
+    def get(self,request,s,l):  
+        if request.method == 'GET':
+            try:
+                queryset = Vacancy_Detail.objects.select_related('company')
+                obj1 = []
+                for i in queryset:
+                    if(s == i.job_category and l == i.company.company_address):
+                        obj1.append({'job_category': i.job_category, 'job_title': i.job_title, 'range_of_salary': i.range_of_salary, 'expiry_date': i.expiry_date, 'company_name': i.company.company_name, 'company_address': i.company.company_address})
+                if not obj1:
+                    return Response({'error': True, 'Message':'No any vacancies available.'}, status = HTTP_400_BAD_REQUEST)
+                return Response({'error':False, 'objlist':obj1}, status = HTTP_200_OK)
+            except Vacancy_Detail.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            # serializer = VacancySerializer(obj1, many=True)
+            # return Response(serializer.data)  
+
+class Search_From_Skill(APIView):
+    def get(self,request,s):
+        if request.method == 'GET':
+            try:
+                queryset = Vacancy_Detail.objects.select_related('company')
+                obj1 = []
+                for i in queryset:
+                    if(s == i.job_category):
+                        obj1.append({'job_category': i.job_category, 'job_title': i.job_title, 'range_of_salary': i.range_of_salary, 'expiry_date': i.expiry_date, 'company_name': i.company.company_name, 'company_address': i.company.company_address})
+                if not obj1:
+                    return Response({'error': True, 'Message':'No any vacancies available.'}, status = HTTP_400_BAD_REQUEST)
+                return Response({'error':False, 'objlist':obj1}, status = HTTP_200_OK)
+            except Vacancy_Detail.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND) 
+
+class Search_From_Location(APIView):
+    def get(self,request,l):
+        if request.method == 'GET':
+            try:
+                queryset = Vacancy_Detail.objects.select_related('company')
+                obj1 = []
+                for i in queryset:
+                    if(l == i.company.company_address):
+                        obj1.append({'job_category': i.job_category, 'job_title': i.job_title, 'range_of_salary': i.range_of_salary, 'expiry_date': i.expiry_date, 'company_name': i.company.company_name, 'company_address': i.company.company_address})
+                if not obj1:
+                    return Response({'error': True, 'Message':'No any vacancies available.'}, status = HTTP_400_BAD_REQUEST)
+                return Response({'error':False, 'objlist':obj1}, status = HTTP_200_OK)
+            except Vacancy_Detail.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['GET'])
-def specific_vacancy_detail(request,pk):
-    try:
-        obj = Vacancy_Detail.objects.get(id = pk)
-    except Vacancy_Detail.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    serializer = VacancySerializer(obj)
-    return Response(serializer.data)  
+def specific_vacancy_detail(request,s,l):
+    
+
+    if request.method == 'GET':
+        if(s != "" and l != ""):
+            try:
+                obj = Vacancy_Detail.objects.filter(skill = s)
+                obj1 = obj.filter(company_address = l)
+            except Vacancy_Detail.DoesNotExist:
+                return Response(status=status.HTTP_404_NOT_FOUND)
+            
+        else:
+            if(s != "" and l == ""):
+                obj1 = Vacancy_Detail.objects.filter(skill = s)
+                
+            if(l !="" and s == ""):
+                obj1 = Vacancy_Detail.objects.filter(company_address = l)
+        serializer = VacancySerializer(obj1, many=True)
+        return Response(serializer.data)  
 
 def verified_login(request):
-    form = LoginForm()
+    form = LoginForm(request.POST)
     url ='http://127.0.0.1:8000/userdetail/'
     r = requests.get(url)
     json_response = r.json()
@@ -160,7 +354,7 @@ def verified_login(request):
             if(j['email_password'] == request.POST['email_password']):
                 return redirect('home')
             messages.success(request, "Incorrect password !")    
-            return redirect('login')    
+            return render(request, 'login.html',{'login_form': form})    
     messages.success(request, "Email not found !")
     return render(request,'login.html',{'login_form':form})
 
@@ -187,52 +381,39 @@ def verified_login(request):
 #     return render(request, 'signup.html',{'signup_form': form})
 
 def search(request):
-    url = 'http://127.0.0.1:8000/Vacancies/'
-    r = requests.get(url)
-    json_response = r.json()
-    filter1=[]
-    filter2=[]
-    if(request.POST['skill'] == "" and request.POST['place'] == ""):
-        messages.success(request, "First fill the field. Please ")
-        return redirect('home')
-    else:
-        if(request.POST['skill'] == ""):
-            filter1 = json_response
-        else:
-            for j in json_response:
-                if(j['skill'] == request.POST['skill']):
-                    contain={
-                        'company_name' : j['company_name'],
-                        'company_address' : j['company_address'],
-                        'skill' : j['skill'],
-                        'salary' : j['salary'],
-                        'urgent' : j['urgent']
-                    }
-                    filter1.append(contain) 
+    if request.method == 'POST':
+        s=request.POST['catagories']
+        p=request.POST['place']
+        queryset = Vacancy_Detail.objects.select_related('company')
+        obj1 = []
+        if(s != "" and p == ""):
+            for i in queryset:
+                if(s == i.job_category):
+                    obj1.append({'pk':i.id, 'job_category': i.job_category, 'job_title': i.job_title, 'range_of_salary': i.range_of_salary, 'expiry_date': i.expiry_date, 'company_name': i.company.company_name, 'company_address': i.company.company_address})
 
+        elif(p != "" and s == ""):
+            for i in queryset:
+                if(p == i.company.company_address):
+                    obj1.append({'pk':i.id, 'job_category': i.job_category, 'job_title': i.job_title, 'range_of_salary': i.range_of_salary, 'expiry_date': i.expiry_date, 'company_name': i.company.company_name, 'company_address': i.company.company_address})
 
-        if(request.POST['place'] == ""):
-            filter2 = filter1
+        elif(s != "" and p != ""):
+            print(s)
+            for i in queryset:
+                if(s == i.job_category and p == i.company.company_address):
+                    obj1.append({'pk':i.id, 'job_category': i.job_category, 'job_title': i.job_title, 'range_of_salary': i.range_of_salary, 'expiry_date': i.expiry_date, 'company_name': i.company.company_name, 'company_address': i.company.company_address})   
         else:
-            for j in filter1:
-                if(j['company_address'] == request.POST['place']):
-                    contain={
-                        'company_name' : j['company_name'],
-                        'company_address' : j['company_address'],
-                        'skill' : j['skill'],
-                        'salary' : j['salary'],
-                        'urgent' : j['urgent']
-                    } 
-                    filter2.append(contain)     
-    if(len(filter2) == 0):
-        return render(request, 'home.html',{'length': 0,'search_form': SearchForm()})
-    else:
-        return render(request, 'home.html',{'v_detail': filter2,'search_form': SearchForm()})
+            messages.success(request, "Fill the detail first.")   
+        
+        paginator = Paginator(obj1, 10)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        return render(request, 'home.html',{'v_detail': page_obj,'search_form': SearchForm()})
+
 
 from django.contrib.auth import login as django_login, logout as django_logout
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.response import Response
+
 
 class LoginView(APIView):
     def post(self, request):

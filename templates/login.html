@@ -1,120 +1,37 @@
-{% load static %}
-<!DOCTYPE html>
-<html>
-<head>
-	<!-- Meta Tags -->
-	<meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<title>Sign up</title>
+{% extends 'basic_page.html' %}
 
-	<!-- Stylesheet -->
-	<link rel="Stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
-</head>
-<body>
-<!-- Header Starts -->
-<header class="header">
-	<!-- Logo and Text -->
-	<div class="logo"><a href="index.html"><img src="{% static 'images/logo.jpg' %}" style="height: 2.5cm;"/></a></div>
-	<div class="logo_text">Rojgarr</div>
-
-	<!-- Search Bar -->
-	 <div class="search_wrapper">
-		<input type="text" placeholder="Search..." class="search_input">
-	</div>
-	<div class="clear"></div>
-
-	<!-- Navigation -->
-	<nav class="navigation">
-		<ul class="nav" id="myDIV">
-				<li><a href="{% url 'home' %}">Home</a></li>
-				<li><a href="about-me.html">About Us</a></li>			
-				<li><a href="achievements.html">Support</a></li>
-				<li><a href="hire-me.html">Profile</a></li>
-				<li><a href="{% url 'signup' %}" class="click">Register</a></li>
-				<li><a href="{% url 'login' %}" class="btn active" onclick="action()">Log in</a></li>
-		</ul>
-	</nav>
-	<div class="clear"></div>
-	<div class="space"></div>
-</header>
-<!-- Header Ends -->
-
+{% block content%}
 <!-- Page Header -->
-<section class="page_heading">
-	<h3 class="page-heading">LOG IN</h3>
-</section>
-<!-- Page Header Ends -->
+	<section class="page_heading">
+		<h3 class="page-heading">LOG IN</h3>
+	</section>
+	<!-- Page Header Ends -->
 
-<section class="page-container">
+	<section class="page-container">
 
-	<!-- Page Content Starts -->
-	<br/><br/>
+		<!-- Page Content Starts -->
+		<br/><br/>
 
-    
-	<div class="con-1">
-		<form id = "forms" action="{% url 'verified_login' %}" method="POST">
-			{% csrf_token %}
-			{{ login_form.email }}
-			<br/>
-			{{ login_form.email_password }}
-			<br/>
-			{% if messages %}
-			{% for message in messages %}
-				<div class="alert alert-danger" role="alert">
-					{{ message }}
-				</div>
-			{% endfor %}
-			{% endif %}
-			<br/> <br/>
-			<input name="send" type="submit" value="Log in" class="main_button" id="button">
-		</form>
-	</div>
+		
+		<div class="con-1">
+			<form id = "forms" action="{% url 'verified_login' %}" method="POST">
+				{% csrf_token %}
+				{{ login_form.email }}
+				<br/>
+				{{ login_form.email_password }}
+				<br/>
+				{% if messages %}
+				{% for message in messages %}
+					<div class="alert alert-danger" role="alert">
+						{{ message }}
+					</div>
+				{% endfor %}
+				{% endif %}
+				<br/> <br/>
+				<input name="send" type="submit" value="Log in" class="main_button" id="button">
+			</form>
+		</div>
 
-	<!-- Page Content Ends   -->
-</section>
-
-<!-- Footer Starts -->
-<footer class="footer">
-	<div class="important_links_wrapper">
-		<h4 class="footer_link_header">Important Links</h4>
-		<ul class="links">
-			<li><a href="my-projects.html">My Projects</a></li>
-			<li><a href="client-reviews.html">Client Reviews</a></li>
-			<!-- <li><a href="usage-terms.html">Usage Terms</a></li>
-			<li><a href="source-code.html">Source Code Rights</a></li> -->
-			<li><a href="my-skills.html">My Skills</a></li>
-			<li><a href="blogs.html">Blogs</a></li>
-			<li><a href="case-studies.html">Case Studies</a></li>
-		</ul>
-	</div>
-
-	<div class="important_links_wrapper">
-		<h4 class="footer_link_header">More Links</h4>
-		<ul class="links">
-			<li><a href="agreement.html">Non-Disclosure Agreement</a></li>
-			<li><a href="payments.html">Payments And Agreements</a></li>
-			
-		</ul>
-	</div>
-
-	<div class="important_links_wrapper_right">
-		<h4 class="footer_link_header">Follow Me</h4>
-		<ul class="social_links">
-			<li><a href="https://www.facebook.com/princerohit.karki" style="padding: 0px;"><img src="{% static 'site_assets/images/fb.png' %}" /></a></li>
-			<li><a href="https://www.instagram.com/rohitkarki335/"><img src="{% static 'site_assets/images/insta.png' %}" /></a></li>
-			<li><a href="https://www.youtube.com"><img src="{% static 'site_assets/images/yt.png' %}" /></a></li>
-		</ul>
-	</div>
-
-
-	<div class="clear"></div>
-	<p class="footer_rights">All rights reserved @2020.</p>
-</footer>
-<!-- Footer Ends -->
-
-<!-- Script -->
-<script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
-<!--<script type="text/javascript" src="site_assets/js/script.js"></script>-->
-<script type="text/javascript" src="{% static 'js/activebutton.js' %}"></script>
-</body>
-</html>
+		<!-- Page Content Ends   -->
+	</section>
+{% endblock %}

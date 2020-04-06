@@ -1,182 +1,132 @@
-<!DOCTYPE html>
+{% extends 'basic_page.html' %}
 {% load static %}
-<html>
-<head>
-	<!-- Meta Tags -->
-	<meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-	<title>Vaccancy Recommendation</title>
-	
 
-	<!-- Stylesheet -->
-	<link rel="Stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
-	
-	<link rel="Stylesheet" type="text/css" href="{% static 'css/homepage.css' %}" />
-</head>
-<body>
-<!-- Header Starts -->
-<header class="header">
-	<!-- Logo and Text -->
-	<div class="logo"><a href="index.html"><img src="{% static 'images/logo.jpg' %}" style="height: 2.5cm;"/></a></div>
-	<div class="logo_text">Rojgarr</div>
+{% block content%}
 
-	<!-- Search Bar -->
-	 <div class="search_wrapper">
-		<input type="text" placeholder="Search..." class="search_input">
-	</div>
-	<div class="clear"></div>
+	<!-- Banner Starts -->
+	<section>
+		<div class="page_heading_index">
+			<!--<div>
+				<img src="site_assets/images/slider.jpg" class="banner" />
+			</div>-->
+			<div class="con-1">
+			<form id = "forms" method="POST" action="{% url 'search' %}">
+				{% csrf_token %}
+				{{ search_form.catagories}}
+				<br/>
+				{{ search_form.place}}
+				<br/>
+				{% if messages %}
+				{% for message in messages %}
+					<div class="alert alert-danger" role="alert">
+						{{ message }}
+					</div>
+				{% endfor %}
+				{% endif %}			
+				<br/> <br/>
+				<input name="send" type="submit" value="Search Job" class="main_button" id="button">
+			</form>
 
-	<!-- Navigation -->
-	<nav class="navigation">
-		<ul class="nav" id="myDIV">
-				<li><a href="{% url 'home' %}" class="btn active" onclick="action()">Home</a></li>
-				<li><a href="about-me.html">About Us</a></li>			
-				<li><a href="achievements.html">Support</a></li>
-				<li><a href="hire-me.html">Profile</a></li>
-				<li><a href="{% url 'signup' %}" class = "click">Register</a></li>
-				<li><a href="{% url 'login' %}" class="click">Log in</a></li>
-		</ul>
-	</nav>
-	<div class="clear"></div>
-	<div class="space"></div>
-</header>
-<!-- Header Ends -->
-
-<!-- Banner Starts -->
-<section>
-	<div class="page_heading_index">
-		<!--<div>
-			<img src="site_assets/images/slider.jpg" class="banner" />
-		</div>-->
-		<div class="con-1">
-		<form id = "forms" action="{% url 'search' %}" method="POST">
-			{% csrf_token %}
-			{{ search_form.skill}}
-			<br/>
-			{{ search_form.place}}
-			<br/>
-			{% if messages %}
-			{% for message in messages %}
-				<div class="alert alert-danger" role="alert">
-					{{ message }}
-				</div>
-			{% endfor %}
-			{% endif %}			
-			<br/> <br/>
-			<input name="send" type="submit" value="Search Job" class="main_button" id="button">
-		</form>
-
+			</div>
 		</div>
-	</div>
-</section>
-<!-- Banner Ends -->
+	</section>
+	<!-- Banner Ends -->
 
-<!-- Feature Highlights Start -->
-<article class="feature_wrapper">
-	<div class="feature_container">
-		<h2 style="font-size: 40px; background-color: #0b3c5d; margin: 16px auto; padding: 13px;">Avialable Jobs</h2>
-		{% if length == 0 %}
-		<br/>
-			<h2 style=" background-color: red;">No any job found.</h2>
-		{% endif %}
-		{% for v in v_detail%}
-		<a href="#"><div class="feature">
-			{% if v.urgent %}
-			<p class="emergency">Urgent<p>
+	<!-- Feature Highlights Start -->
+	<article class="feature_wrapper">
+		<div class="feature_container">
+			<h2 style="font-size: 40px; background-color: #0b3c5d; margin: 16px auto; padding: 13px;">Avialable Jobs</h2>
+			{% if not v_detail %}
+			<br/>
+				<h2 style=" background-color: red;">No any job found.</h2>
 			{% endif %}
-			<p>{{v.skill}}</p>
-			<p>{{v.company_name}}</p>
-			<p>{{v.company_address}}</p>
-			<p>Rs. {{v.salary}}</p>
-		</div></a>	
-		{% endfor %}	
-	</div>
-</article>
-<!-- Feature Highlight ends -->
-
-<!-- Latest Projects Section Starts -->
-<div class="space"></div>
-<section class="latest_projects_wrapper">
-	<h3 class="page_heading_home">Advertisement</h3>
-	<div class="project_container">
-		<!-- Main Project -->
-		<div class="project_thumb_wrapper">
-			<p><a href="#"><b>Just Img.com</b></a></p>
-			<img src="{% static 'images/p1.jpg' %}" />
-			<p> short description</p>
-		</div>
-		<!-- Main Project ends -->
-
-		<!-- Main Project -->
-		<div class="project_thumb_wrapper">
-			<p><a href="#"><b>Just Img.com</b></a></p>
-			<img src="{% static 'images/p1.jpg' %}" />
-			<p> short description</p>
-		</div>
-		<!-- Main Project ends -->
-
-		<!-- Main Project -->
-		<div class="project_thumb_wrapper">
-			<p><a href="#"><b>Just Img.com</b></a></p>
-			<img src="{% static 'images/p1.jpg' %}" />
-			<p> short description</p>
-		</div>
-		<!-- Main Project ends -->
-
-		<!-- Main Project -->
-		<div class="project_thumb_wrapper">
-			<p><a href="#"><b>Just Img.com</b></a></p>
-			<img src="{% static 'images/p1.jpg' %}" />
-			<p> short description</p>
-		</div>
-		<!-- Main Project ends -->
-	</div>
-</section>
-<div class="space"></div>
-<div class="space"></div>
-<!-- Latest Projects section ends -->
-
-<!-- Footer Starts -->
-<footer class="footer">
-	<div class="important_links_wrapper">
-		<h4 class="footer_link_header">Important Links</h4>
-		<ul class="links">
-			<li><a href="my-projects.html">Our Projects</a></li>
-			<li><a href="client-reviews.html">Client Reviews</a></li>
-			<!-- <li><a href="usage-terms.html">Usage Terms</a></li>
-			<li><a href="source-code.html">Source Code Rights</a></li> -->
-			<li><a href="my-skills.html">Our partners</a></li>
-			<li><a href="blogs.html">Blogs</a></li>
-		</ul>
-	</div>
-
-	<div class="important_links_wrapper">
-		<h4 class="footer_link_header">More Links</h4>
-		<ul class="links">
-			<li><a href="agreement.html">Non-Disclosure Agreement</a></li>
-			<li><a href="payments.html">Payments And Agreements</a></li>
 			
-		</ul>
-	</div>
+			{% for v in v_detail%}
+			<a href="{% url 'description' pk=v.pk %}"><div class="feature">
+				{% if v.urgent %}
+				<p class="emergency">Urgent<p>
+				{% endif %}
+				<p>Job Category : {{v.job_category}}</p>
+				<p>Job Title : {{v.job_title}}</p>
+				<p>Salary : Rs. {{v.range_of_salary}}</p></br>
+				<p>{{v.company_name}}</p>
+				<p>{{v.company_address}}</p>
+			</div></a>	
+			{% endfor %}	
+		</div>
+		<div class="pagination">
+			{% if v_detail.has_previous %}
+				<a class="pagination_action" href="?page=1">&laquo; First</a>
+				<a class="pagination_action" href="?page={{ v_detail.previous_page_number }}">Previous</a>
+			{% endif %}
+			{% for num in v_detail.paginator.page_range %}
+				{% if v_detail.number == num %}
+					<span class="pagination_number pagination_current" >{{ num }} </span>
+				{% elif num > v_detail.number|add:'-3' and num < v_detail.number|add:'3' %}
+					<span class="pagination_number">{{ num }}</span>
+				{% endif %}
+			{% endfor %}
+			{% if v_detail.has_next %}
+				<a class="pagination_action" href="?page={{ v_detail.next_page_number }}">Next</a>
+				<a class="pagination_action" href="?page={{ v_detail.paginator.num_pages }}">Last &raquo;</a>
+			{% endif %}	
+			{% comment %} <span class="step-links">
+				{% if page_obj.has_previous %}
+					<a href="?page=1">&laquo; First</a>
+					<a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+				{% endif %}
 
-	<div class="important_links_wrapper_right">
-		<h4 class="footer_link_header">Follow Me</h4>
-		<ul class="social_links">
-			<li><a href="https://www.facebook.com" style="padding: 0px;"><img src="{% static 'images/fb.png' %}" /></a></li>
-			<li><a href="https://www.instagram.com"><img src="{% static 'images/insta.png' %}" /></a></li>
-			<li><a href="https://www.youtube.com"><img src="{% static 'images/yt.png' %}"/></a></li>
-		</ul>
-	</div>
+				<span class="current" style="font-size = 10px;">
+					{{ page_obj.number }} <strong > to </strong> {{ page_obj.paginator.num_pages }}.
+				</span>
+
+				{% if page_obj.has_next %}
+					<a href="?page={{ page_obj.next_page_number }}">Next</a>
+					<a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+				{% endif %}
+			</span> {% endcomment %}
+		</div>
+	</article>
+	<!-- Feature Highlight ends -->
 
 
-	<div class="clear"></div>
-	<p class="footer_rights">All rights reserved @2020.</p>
-</footer>
-<!-- Footer Ends -->
 
-<!-- Script -->
-<script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/script.js' %}"></script>
-<script type="text/javascript" src="{% static 'js/activebutton.js' %}"></script>
-</body>
-</html>
+	<!-- Latest Projects Section Starts -->
+	<div class="space"></div>
+	<section class="latest_projects_wrapper">
+		<h3 class="page_heading_home">Advertisement</h3>
+		<div class="project_container">
+			<!-- Main Project -->
+			<div class="project_thumb_wrapper">
+				<p><a href="#"><b>Just Img.com</b></a></p>
+				<img src="{% static 'images/p1.jpg' %}" />
+				<p> short description</p>
+			</div>
+			<!-- Main Project ends -->
+
+			<!-- Main Project -->
+			<div class="project_thumb_wrapper">
+				<p><a href="#"><b>Just Img.com</b></a></p>
+				<img src="{% static 'images/p1.jpg' %}" />
+				<p> short description</p>
+			</div>
+			<!-- Main Project ends -->
+
+			<!-- Main Project -->
+			<div class="project_thumb_wrapper">
+				<p><a href="#"><b>Just Img.com</b></a></p>
+				<img src="{% static 'images/p1.jpg' %}" />
+				<p> short description</p>
+			</div>
+			<!-- Main Project ends -->
+
+			<!-- Main Project -->
+			<div class="project_thumb_wrapper">
+				<p><a href="#"><b>Just Img.com</b></a></p>
+				<img src="{% static 'images/p1.jpg' %}" />
+				<p> short description</p>
+			</div>
+			<!-- Main Project ends -->
+		</div>
+	</section>
+{% endblock %}
