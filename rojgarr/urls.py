@@ -9,17 +9,29 @@ from rojgarr.views import *
 urlpatterns = [
     path('',views.home, name='home'),
     path('register/',views.user_detail, name='register'),
+    path('employer/register/',views.employer_user_detail, name='employer_register'),
     path('header/',views.header, name='header'),
     path('signup/',views.signup,name='signup'),
     path('login/',views.login, name='login'),
     path('employer/', views.employer_part, name='employer'),
     path('employer/sign_up', views.register_employer, name='employer_sign_up'),
+
+    # url for verify normal user login 
     path('verifylogin/',views.verified_login, name='verified_login'),
+    # url for employer verify log in
+    path('employer/verifylogin/',views.employer_verified_login, name='employer_verified_login'),
+    
+    # create job url
     path('create/vacancies',views.create_job, name='create_job'),
+
     #path('vacancies/', views.vacancies, name='vacancies'),   
     path('vacancies/<str:s>/<str:l>', views.specific_vacancy_detail, name='specific_vacancy-detail'), 
     path('search/', views.search, name='search'),
     path('userdetail/', views.user_detail, name='user_detail'),
+
+    # url for sign up employer
+    path('employer/userdetail/', views.employer_user_detail, name='employer_user_detail'),
+
     path('lon_lat/<str:address>',views.location_lat_lon, name='log_lat'),
     #path('Search', views.Search_Value, name='search'),
     # url(r'(?P<s>[0-9]+)/$', views.Search_Value, name='search'),

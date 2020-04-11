@@ -10,7 +10,7 @@
 				<img src="site_assets/images/slider.jpg" class="banner" />
 			</div>-->
 			<div class="con-1">
-			<form id = "forms" method="POST" action="{% url 'search' %}">
+			<form id = "forms" method="POST" action="{% url 'search'%}">
 				{% csrf_token %}
 				{{ search_form.catagories}}
 				<br/>
@@ -36,22 +36,24 @@
 	<article class="feature_wrapper">
 		<div class="feature_container">
 			<h2 style="font-size: 40px; background-color: #0b3c5d; margin: 16px auto; padding: 13px;">Avialable Jobs</h2>
-			{% if not v_detail %}
+			{% comment %} {% if not v_detail %}
 			<br/>
 				<h2 style=" background-color: red;">No any job found.</h2>
-			{% endif %}
+			{% endif %} {% endcomment %}
 			
 			{% for v in v_detail%}
-			<a href="{% url 'description' pk=v.pk %}"><div class="feature">
-				{% if v.urgent %}
-				<p class="emergency">Urgent<p>
-				{% endif %}
-				<p>Job Category : {{v.job_category}}</p>
-				<p>Job Title : {{v.job_title}}</p>
-				<p>Salary : Rs. {{v.range_of_salary}}</p></br>
-				<p>{{v.company_name}}</p>
-				<p>{{v.company_address}}</p>
-			</div></a>	
+				<a href="{% url 'description' pk=v.pk %}"><div class="feature">
+					{% if v.urgent %}
+					<p class="emergency">Urgent<p>
+					{% endif %}
+					<p>Job Category : {{v.job_category}}</p>
+					<p>Job Title : {{v.job_title}}</p>
+					<p>Salary : Rs. {{v.range_of_salary}}</p></br>
+					<p>{{v.company_name}}</p>
+					<p>{{v.company_address}}</p>
+				</div></a>	
+			{% empty %}
+				<h2 style=" background-color: red;">No any job found.</h2>
 			{% endfor %}	
 		</div>
 		<div class="pagination">
@@ -67,7 +69,7 @@
 				{% endif %}
 			{% endfor %}
 			{% if v_detail.has_next %}
-				<a class="pagination_action" href="?page={{ v_detail.next_page_number }}">Next</a>
+				<a class="pagination_action" href="?page={{v_detail.next_page_number}}">Next</a>
 				<a class="pagination_action" href="?page={{ v_detail.paginator.num_pages }}">Last &raquo;</a>
 			{% endif %}	
 			{% comment %} <span class="step-links">

@@ -12,6 +12,7 @@ from django.contrib import messages
 import requests, json, googlemaps
 import geopy.geocoders as geocoders 
 from geopy.geocoders import Nominatim
+from django.contrib.auth.hashers import make_password, check_password
 
 from rest_framework.status import (
     HTTP_400_BAD_REQUEST,
@@ -27,7 +28,7 @@ from django.core.paginator import Paginator
 def header(request):    
         return render(request, 'header.html')
 
-def home(request):
+def home(request, cond=None):
 
     queryset = Vacancy_Detail.objects.select_related('company')
     obj1 = []
@@ -38,10 +39,10 @@ def home(request):
     form = SearchForm()
     
     # vacancies = Vacancy_Detail.objects.order_by('-date_added')
-    paginator = Paginator(obj1, 10)
+    paginator = Paginator(obj1, 3)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    return render(request, 'home.html',{'v_detail': page_obj,'search_form': form})
+    return render(request, 'home.html',{'v_detail': page_obj,'search_form': form, 'cond':cond})
 
 def signup(request):
     form = SignupForm()    
@@ -55,9 +56,8 @@ def employer_part(request):
     form = LoginForm()
     return render(request,'log_in_employer.html',{'login_form':form})
 
-def register_employer(request):
-    form = SignupForm()
-    return render(request, 'sign_up_employer.html',{'signup_form': form})  
+def register_employer(request):  
+        return render(request, 'sign_up_employer.html',{'signup_form': SignupFormEmployer()})     
 
 def create_job(request):
     form = VacancyAnnounceForm()
@@ -217,32 +217,131 @@ class Search(APIView):
 @api_view(['GET','POST'])
 def user_detail(request):
 
-    if request.method == 'GET':
-        obj = Register_Detail.objects.all()
-        serializer = RegisterSerializer(obj , many = True)
-        return Response(serializer.data)
+    # if request.method == 'GET':
+        # obj = Register_Detail.objects.all()
+        # serializer = RegisterSerializer(obj , many = True)
+        # return Response(serializer.data)
+    
+    # hasssing the password
+    password = make_password(request.POST['email_password'])
 
-    elif request.method == 'POST':
-
-
-        form = SignupForm(request.POST);          
-        serializer = RegisterSerializer(data=request.data)
-        if serializer.is_valid():
-            url ='http://127.0.0.1:8000/userdetail/'
-            r = requests.get(url)
-            json_response = r.json()
-
-            for j in json_response:
-                if(j['email'] == request.POST['email']):
-                    messages.success(request, j['email'] + ' already exist!')    
-                    return redirect('signup')
-                else:  
-                    serializer.save()
+    values = Register_Detail(
+        full_name = request.POST['full_name'],
+        email = request.POST['email'],
+        email_password = password
+    )
+    if request.method == 'POST':
+        try:
+            form = SignupForm(request.POST);          
+            serializer = RegisterSerializer(data=request.data)
+            if serializer.is_valid():
+                email = request.POST['email']
+                if(Register_Detail.objects.filter(email = email)):
+                        messages.success(request, email + ' already exist!')    
+                        return redirect('signup')
+                else:
+                    values.save()
                     messages.success(request, "Register Successfully !")    
-                    return redirect('signup') 
-        else:
-            messages.success(request, "Email is not valid !")  
-            return render(request, 'signup.html',{'signup_form': form})   
+                return redirect('signup') 
+            else:
+                messages.success(request, "Email is not valid !")  
+                return render(request, 'signup.html',{'signup_form': form})  
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+    # elif request.method == 'POST':
+
+    #     form = SignupForm(request.POST);          
+    #     serializer = RegisterSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #         url ='http://127.0.0.1:8000/userdetail/'
+    #         r = requests.get(url)
+    #         json_response = r.json()
+
+    #         for j in json_response:
+    #             if(j['email'] == request.POST['email']):
+    #                 messages.success(request, j['email'] + ' already exist!')    
+    #                 return redirect('signup')
+
+    #         serializer.save()
+    #         messages.success(request, "Register Successfully !")    
+    #         return redirect('signup') 
+    #     else:
+    #         messages.success(request, "Email is not valid !")  
+    #         return render(request, 'signup.html',{'signup_form': form})   
+
+
+@api_view(['POST'])
+def employer_user_detail(request):
+
+    # if request.method == 'GET':
+    #     obj = Register_Company_Detail.objects.all()
+    #     serializer = RegisterCompanySerializer(obj , many = True)
+    #     return Response(serializer.data)
+
+    if request.method == 'POST':
+        try:
+            address = request.POST['company_address']
+            print('a')
+            li=[]
+            li = location_lat_lon(address) #call the function for address longitude and latitude
+            print('b')
+            form = SignupFormEmployer(request.POST)     
+            serializer = RegisterCompanySerializer(data=request.data)
+            # hasssing the password
+            password = make_password(request.POST['company_password'])
+            values = Register_Company_Detail(
+                company_name = request.POST['company_name'],
+                company_address = request.POST['company_address'],
+                company_contact = request.POST['company_contact'],
+                company_email = request.POST['company_email'],
+                company_password = password,
+                address_latitude = li[0],
+                address_longitude = li[1]
+            )
+            if serializer.is_valid():
+                email = request.POST['company_email']
+                print('a')
+                if(Register_Company_Detail.objects.filter(company_email = email)):
+                    print('b')
+                    messages.success(request, email + ' already exist!')    
+                    return redirect('employer_sign_up')
+                else:                
+                    values.save()
+                    messages.success(request, "Register Successfully !")    
+                    return redirect('employer_sign_up') 
+            else:
+                messages.success(request, "Email is not valid !")  
+                return render(request, 'sign_up_employer.html',{'signup_form': form})  
+            
+        except:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        # print('0')
+        # # location_lat_lon(request.POST['company_address'])
+        # form = SignupFormEmployer(request.POST)     
+        # serializer = RegisterCompanySerializer(data=request.data)
+        # values = Register_Company_Detail(
+        #     company_name = request.POST['company_name'],
+        #     company_address = request.POST['company_address'],
+        #     company_contact = request.POST['company_contact'],
+        #     company_email = request.POST['company_email'],
+        #     company_password = request.POST['company_password']
+        # )
+        # if serializer.is_valid():
+        #     url ='http://127.0.0.1:8000/employer/userdetail/'
+        #     r = requests.get(url)
+        #     json_response = r.json()
+
+        #     for j in json_response:
+        #         if(j['company_email'] == request.POST['company_email']):
+        #             messages.success(request, j['company_email'] + ' already exist!')    
+        #             return redirect('employer_sign_up')
+                    
+        #     values.save()
+        #     messages.success(request, "Register Successfully !")    
+        #     return redirect('employer_sign_up') 
+        # else:
+        #     messages.success(request, "Email is not valid !")  
+        #     return render(request, 'sign_up_employer.html',{'signup_form': form})  
 
 def location_lat_lon(address):
 # api =  "https://maps.googleapis.com/maps/api/place/nearbysearch/json
@@ -267,11 +366,11 @@ def location_lat_lon(address):
     # print(lat)
     # print(lon)
     # return (lat)
+    
     non = Nominatim()
     n=non.geocode(address)
-    print(n.latitude)
-    print(n.longitude)
     li = [n.latitude, n.longitude]
+    print(li)
     return li
 
 
@@ -345,27 +444,43 @@ def specific_vacancy_detail(request,s,l):
 
 def verified_login(request):
     form = LoginForm(request.POST)
-    url ='http://127.0.0.1:8000/userdetail/'
-    r = requests.get(url)
-    json_response = r.json()
+    # url ='http://127.0.0.1:8000/userdetail/'
+    # r = requests.get(url)
+    # json_response = r.json()
 
-    for j in json_response:
-        if(j['email'] == request.POST['email']):    
-            if(j['email_password'] == request.POST['email_password']):
-                return redirect('home')
-            messages.success(request, "Incorrect password !")    
-            return render(request, 'login.html',{'login_form': form})    
-    messages.success(request, "Email not found !")
-    return render(request,'login.html',{'login_form':form})
+    # for j in json_response:
+    #     if(j['email'] == request.POST['email']):    
+    #         if(j['email_password'] == request.POST['email_password']):
+    #             return redirect('home')
+    #         messages.success(request, "Incorrect password !")    
+    #         return render(request, 'login.html',{'login_form': form})    
+    # messages.success(request, "Email not found !")
+    # return render(request,'login.html',{'login_form':form})
 
-    # if request.method == 'POST':
-    #     try:
-    #         obj = Register_Detail.objects.get(email = request.POST['email']) or Vacancy_Detail.objects.get(email_password = request.POST['email_password'])
-    #     except Register_Detail.DoesNotExist:
-    #         return Response(status=status.HTTP_404_NOT_FOUND)
-    #     serializer = registerSerializer(obj)
-    #     return Response(serializer.data)
+    if request.method == 'POST': 
+        email = request.POST['email']
+        obj = Register_Detail.objects.get(email = email)
+        confirmation_password = check_password(request.POST['email_password'],obj.email_password)
+        print(confirmation_password)
+        if(confirmation_password):            
+            return render(request,'home.html')
+        else:
+            messages.info(request, 'Invalid email or password')
+            return render(request,'login.html',{'login_form':form})
 
+def employer_verified_login(request):
+    form = LoginForm(request.POST)
+
+    if request.method == 'POST': 
+        email = request.POST['email']
+        obj = Register_Company_Detail.objects.get(company_email = email)
+        confirmation_password = check_password(request.POST['email_password'],obj.company_password)
+        print(confirmation_password)
+        if(confirmation_password):            
+            return redirect('create_job')
+        else:
+            messages.info(request, 'Invalid email or password')
+            return render(request,'login.html',{'login_form':form})
 
 # def registration(request):
     
@@ -404,7 +519,10 @@ def search(request):
         else:
             messages.success(request, "Fill the detail first.")   
         
-        paginator = Paginator(obj1, 10)
+        if not obj1:
+            messages.success(request, "No any job is available.")  
+
+        paginator = Paginator(obj1, 2)
         page_number = request.GET.get('page')
         page_obj = paginator.get_page(page_number)
         return render(request, 'home.html',{'v_detail': page_obj,'search_form': SearchForm()})

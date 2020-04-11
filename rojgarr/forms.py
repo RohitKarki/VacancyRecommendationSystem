@@ -2,6 +2,7 @@ from django import forms
 from .models import *
 from django.core.validators import validate_email
 from django.shortcuts import redirect
+from django.core.exceptions import ValidationError 
 from django.contrib.auth import authenticate
 
 class SignupForm(forms.ModelForm):
@@ -15,19 +16,10 @@ class SignupForm(forms.ModelForm):
     email_password = forms.CharField(max_length=50,
     widget=forms.TextInput(attrs={'class': 'form-field', 'style': 'width:255px','placeholder' : 'Password'}))
 
-    location = forms.CharField(max_length=50,
-    widget=forms.TextInput(attrs={'class': 'form-field','style': 'width:255px', 'placeholder' : 'eg. kamalpokhari, ktm'}), required = True)
-
-    bussiness = forms.CharField(max_length=50,
-    widget=forms.TextInput(attrs={'class': 'form-field','style': 'width:255px', 'placeholder' : 'eg. Freefox pvt.ltd'}), required = True)
-
-    contact = forms.CharField(max_length=50,
-    widget=forms.TextInput(attrs={'class': 'form-field','style': 'width:255px', 'placeholder' : 'eg. 9843470870'}), required = True)
 
     class Meta:
         model = Register_Detail
         fields = "__all__"
-
     # def clean_email(self):
     #     email = self.cleaned_data('email')
     #     if(validate_email(email)):
@@ -50,6 +42,65 @@ class SignupForm(forms.ModelForm):
     #         raise forms.ValidationError("Password should not be all numeric")
     #     else:
     #         return pas
+
+class SignupFormEmployer(forms.ModelForm):
+
+    company_email = forms.EmailField(max_length=254, 
+    widget=forms.TextInput(attrs={'class': 'form-field', 'style': 'width:255px','placeholder' : 'Email'}))
+    
+    company_password = forms.CharField(max_length=50,
+    widget=forms.TextInput(attrs={'class': 'form-field', 'style': 'width:255px','placeholder' : 'Password'}))
+
+    company_address = forms.CharField(max_length=50,
+    widget=forms.TextInput(attrs={'class': 'form-field','style': 'width:255px', 'placeholder' : 'eg. kamalpokhari, ktm'}), required = True)
+
+    company_name = forms.CharField(max_length=50,
+    widget=forms.TextInput(attrs={'class': 'form-field','style': 'width:255px', 'placeholder' : 'eg. Freefox pvt.ltd'}), required = True)
+
+    company_contact = forms.CharField(max_length=50,
+    widget=forms.TextInput(attrs={'class': 'form-field','style': 'width:255px', 'placeholder' : 'eg. 9843470870'}), required = True)
+
+    class Meta:
+        model = Register_Detail
+        fields = "__all__"
+# class RegisterCompanyForm(forms.ModelForm):
+#     company_password = forms.CharField(widget = forms.PasswordInput(
+#     attrs={'class': 'form-field','style': 'height: 10px; width:255px; margin: 10px','placeholder' : 'eg. **********'}))
+
+#     class Meta:
+#         model = Register_Company_Detail
+#         fields = ['company_user','company_name','company_address','company_contact','company_email','company_password']
+#         label = {
+#             'passowrd': 'company_password'
+#         }
+#         widgets = {
+#             'company_name': forms.TextInput(
+#                 attrs={'class': 'form-field','style': 'height: 10px; width:255px; margin: 10px; font-size: 15px','placeholder' : 'eg. Freefox pvt.ltd'}),
+#             'company_address': forms.TextInput(
+#                  attrs={'class': 'form-field','style': 'height: 10px; width:255px; margin: 10px; font-size: 15px','placeholder' : 'eg. kamalpokhari, ktm'}),
+#             'company_contact':forms.TextInput(
+#                  attrs={'class': 'form-field','style': 'height: 10px; width:255px; margin: 10px; font-size: 15px','placeholder' : 'eg. 9861504770'}),
+#             'company_email':forms.TextInput(
+#                  attrs={'class': 'form-field','style': 'height: 10px; width:255px; margin: 10px; font-size: 15px','placeholder' : 'eg. abc123@gmail.com'}),
+#         }
+
+#     def clean_email(self):
+#         email = self.cleaned_data('company_email')
+#         if(validate_email(email)):
+#             try:
+#                 Register_Company_Detail.objects.get(company_email = email)
+#             except:
+#                 return email
+#             raise ValidationError("Email already exist")
+#         else:
+#             raise ValidationError("Email is not valid")
+
+#     def save(self):
+#         company_password = self.cleaned_data.pop('company_password')
+#         u = super().save()
+#         u.set_password(company_password)
+#         u.save()
+#         return u 
 
 class LoginForm(forms.Form):
 

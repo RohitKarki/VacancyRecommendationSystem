@@ -15,24 +15,27 @@
 
 		
 		<div class="con-1">
-			<form id = "forms" action="{% url 'register' %}" method="POST">
+			<form id = "forms" method="POST" action="{% url 'employer_user_detail' %}" >
 				{% csrf_token %}
+				{% comment %} <ul>
+				{{signup_form.as_ul}}
+				</ul></br> {% endcomment %}
 				{{ signup_form.}}
 				<br/>
-				{{ signup_form.email }}
+				{{ signup_form.company_email }}
 				<br/>
-				{{ signup_form.email_password }}
+				{{ signup_form.company_password }}
 				<br/>
                 <h3>Company Address</h3></br>
-				{{ signup_form.location }}
+				{{ signup_form.company_address }}
 				<br/>
-				
+
                 <h3>Company Name</h3></br>
-				{{ signup_form.bussiness }}
+				{{ signup_form.company_name }}
 				<br/>
 				<h3>Phone Number</h3></br>
-				{{ signup_form.contact }}
-				<br/>
+				{{ signup_form.company_contact }}
+				<br/> 
 				{% if messages %}
 				{% for message in messages %}
 					<div class="alert alert-danger" role="alert">
