@@ -7,10 +7,21 @@ from rojgarr.views import *
 #router = routers.DefaultRouter()
 #router.register('rojgarr', views.vacancies)
 urlpatterns = [
+    # home pgae without logged in for normal user
     path('',views.home, name='home'),
+    # home page after logged in for normal user
+    path('verified/home/',views.home_logged_in, name='log_in_home'),
+    # redirected page after log in employer
+    path('verified_employer/', views.employer_logged_in, name='employer_logged_in'),
+
+    # path for register the detail of user
     path('register/',views.user_detail, name='register'),
     path('employer/register/',views.employer_user_detail, name='employer_register'),
-    path('header/',views.header, name='header'),
+
+    # redirect page to company review
+    path('comapny_review/',views.company_review, name='company_review'),
+
+    # path('header/',views.header, name='header'),
     path('signup/',views.signup,name='signup'),
     path('login/',views.login, name='login'),
     path('employer/', views.employer_part, name='employer'),
@@ -38,13 +49,18 @@ urlpatterns = [
     url(r'(?P<pk>\d+)/$',views.des, name='description' ),
 
 
-    path('Vacancies/', Vacancies.as_view(), name='add_vacancy'),
+
+    # path for add the vacancy detail
+    path('add_vacncy/', views.add_vacancy_detail, name='announce_vacancy'),
+    # path('Vacancies/', Vacancies.as_view(), name='add_vacancy'),
+
     # path('Search/', Call_Search.as_view(), name='start'),
     path('Catagory/<str:s>/Search_Vacancies', Search_From_Skill.as_view()),
     path('Location/<str:l>', Search_From_Location.as_view()),
     path('Search_Vacancies/Catagory/Location/<str:s>/<str:l>', Search_From_Skill_Location.as_view()),
     #path('Search/<str:skill>/<str:place>', Search.as_view()),
     path('Userdetail/', User_detail.as_view()),
-    path('auth/login/', LoginView.as_view()),
-    path('auth/login/', LogoutView.as_view()),
+    # path('auth/login/', LoginView.as_view()),
+    # path('auth/login/', LogoutView.as_view()),
+
 ]

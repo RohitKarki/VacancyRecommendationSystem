@@ -4,6 +4,7 @@ from django.core.validators import validate_email
 from django.shortcuts import redirect
 from django.core.exceptions import ValidationError 
 from django.contrib.auth import authenticate
+from django.utils.safestring import mark_safe
 
 class SignupForm(forms.ModelForm):
 
@@ -173,3 +174,46 @@ class VacancyAnnounceForm(forms.Form):
 
     end_date = forms.DateField(
     widget=EndDate(attrs={'class': 'form-field','style': 'width:130px'}), required = True)
+
+class CompanyReviewForm(forms.Form):
+
+    choices  = [('Bad','Bad'),('Good','Good'),('Very Good','Very Good')]
+    rate = [('Low','Low'),('Medium','Medium'),('High','High')]
+    like = [(True,'Yes'), (False,'No')]
+
+    company_name = forms.CharField(max_length=50,
+    widget=forms.TextInput(attrs={'class': 'form-field','style': 'width:255px', 'placeholder' : 'eg. Freefox pvt.ltd'}), required = True)
+    
+    job_title= forms.CharField(max_length=50,
+    widget=forms.TextInput(attrs={'class': 'form-field','style': 'width:255px', 'placeholder' : 'eg. Developer'}), required = True)
+
+    working_environment = forms.ChoiceField(required=True,
+                            widget=forms.RadioSelect(),
+                            choices=choices)
+
+    oppurtunity_rate = forms.ChoiceField(required=True,choices=rate,
+    widget=forms.RadioSelect)
+
+    management = forms.ChoiceField(required=True,choices=choices,
+    widget=forms.RadioSelect)
+
+    benefits_perks = forms.ChoiceField(required=True,choices=rate,
+    widget=forms.RadioSelect)
+
+    fecilities = forms.ChoiceField(required=True,choices=choices,
+    widget=forms.RadioSelect)
+
+    recommend_other = forms.ChoiceField(required=True,choices=like,
+    widget=forms.RadioSelect)
+
+    salary_rate = forms.ChoiceField(required=True,choices=rate,
+    widget=forms.RadioSelect) 
+
+    good_things = forms.CharField(max_length=500,
+    widget=forms.Textarea(attrs={'class': 'form-field',"rows":5, "cols":20}), required = True)
+
+    challeneges = forms.CharField(max_length=500,
+    widget=forms.Textarea(attrs={'class': 'form-field',"rows":5, "cols":20}), required = True)
+
+    company_summary = forms.CharField(max_length=500,
+    widget=forms.Textarea(attrs={'class': 'form-field',"rows":5, "cols":20}), required = True)

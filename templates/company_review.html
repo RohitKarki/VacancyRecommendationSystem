@@ -1,0 +1,83 @@
+{% extends 'basic_page.html' %}
+{% load static %}
+
+{% block content%}
+	<section class="page_heading">
+		<h3 class="page-heading">Company Review</h3>
+	</section>
+    <section class="page-container">
+
+        <!-- Page Content Starts -->
+        <br/><br/>
+
+        
+        <div class="con-1">
+            <form id = "forms" action="#" method="POST">
+                {% csrf_token %}
+                <h3>Company Name</h3>
+                {{ comapy_review_form.company_name }}
+                <br/>
+                <h3>Job Title</h3>
+                {{ comapy_review_form.job_title }}
+                <br/>
+                <br/>
+                <h3>How is the working environment?</h3>
+                <div class="radio">
+                {{ comapy_review_form.working_environment }}
+                </div> 
+                <br/>
+                <h3>How is the management of company?</h3>
+                <div class="radio">
+                {{ comapy_review_form.management }}
+                </div> 
+                <br/>
+                <h3>How is the facilities of company?</h3>
+                <div class="radio">
+                {{ comapy_review_form.fecilities }}
+                </div> 
+                <br/>
+                <h3>How much you get oppurtunity in this company?</h3>
+                <div class="radio">
+                {{ comapy_review_form.oppurtunity_rate }}
+                </div> 
+                <br/>
+                <h3>How much salary you get in the context of your work?</h3>
+                <div class="radio">
+                {{ comapy_review_form.salary_rate }}
+                </div> 
+                <br/>
+                <h3>How much you get benefits and perks?</h3>
+                <div class="radio">
+                {{ comapy_review_form.benefits_perks }}
+                </div> 
+                <br/>
+                <h3>Good things about company:</h3></br>
+                {{ comapy_review_form.good_things }}
+                <br/>
+                <h3>Challenges:</h3></br>
+                {{ comapy_review_form.challeneges }}
+                <br/>
+                <h3>Company Summary:</h3></br>
+                {{ comapy_review_form.company_summary }}
+                <br/>
+                <h3>Would you recommend your friends to join this company?</h3>
+                <div class="radio">
+                {{ comapy_review_form.recommend_other }}
+                </div> 
+                <br/>
+
+                {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-danger" role="alert">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+                {% endif %}
+                <br/> <br/>
+                <input name="send" type="submit" value="Submit" class="main_button" id="button">
+            </form>
+        </div>
+
+        <!-- Page Content Ends   -->
+    </section>
+{% endblock %}

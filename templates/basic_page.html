@@ -29,14 +29,18 @@
 	<!-- Navigation -->
 	<nav class="navigation">
 		<ul class="nav" id="myDIV">
-				<li><a href="{% url 'home' %}"  onclick="action()">Home</a></li>
-				<li><a href="about-me.html">About Us</a></li>			
-				<li><a href="achievements.html">Support</a></li>
-				{% if cond %}
+				{% if cond == 'yes' %}
+					<li><a href="{% url 'log_in_home' %}"  onclick="action()">Home</a></li>
+					<li><a href="{% url 'company_review' %}">Company Review</a></li>
+					<li><a href="#">About Us</a></li>			
+					<li><a href="#">Support</a></li>
 					<li><a href="#">{{ fullname }}</a></li>
 					<li><a href="{% url 'login' %}" class="click">Log out</a></li>
+
 				{% else %}
-					<li><a href="hire-me.html">Profile</a></li>
+					<li><a href="{% url 'home' %}"  onclick="action()">Home</a></li>
+					<li><a href="about-me.html">About Us</a></li>			
+					<li><a href="achievements.html">Support</a></li>
 					<li><a href="{% url 'signup' %}" class = "click">Register</a></li>
 					<li><a href="{% url 'login' %}" class="click">Log in</a></li>
 					<li><a href="{% url 'employer' %}" class="click">Employer Site</a></li>

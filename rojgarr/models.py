@@ -6,6 +6,8 @@ from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
 # Create your models here.
+
+# model class for Register_Company_Detail
 class Register_Company_Detail(models.Model):
     company_name = models.CharField(max_length=50)
     company_address = models.CharField( max_length=50)
@@ -26,6 +28,7 @@ class Register_Company_Detail(models.Model):
 #         else:
 #             instance.Register_Company_Detail.save()
 
+# model class for Vacancy_Detail
 class Vacancy_Detail(models.Model):
     company = models.ForeignKey(Register_Company_Detail, on_delete=models.CASCADE, blank = True, null = True)
     job_category = models.CharField(max_length=50)
@@ -42,7 +45,7 @@ class Vacancy_Detail(models.Model):
     def __str__(self):
         return self.job_title
 
-
+# model class for Register_Detail of normal user
 class Register_Detail(models.Model):  
     full_name = models.CharField(max_length=50)
     email = models.EmailField(max_length=254)
@@ -58,7 +61,7 @@ class Register_Detail(models.Model):
 #         Token.objects.create(user=instance)
         
     
-
+# model class for Advertisement_Detail
 class Advertisement_Detail(models.Model):
     advertiser_name = models.CharField(max_length=50)
     link = models.CharField(max_length=60)
@@ -68,3 +71,19 @@ class Advertisement_Detail(models.Model):
 
     def __str__(self):
         return self.advertiser_name
+
+# model class for company_review
+class Company_Review(models.Model):
+    email = models.ForeignKey(Register_Detail, on_delete=models.CASCADE, blank = True, null = True)
+    company_name = models.CharField(max_length=50)
+    job_title = models.CharField(max_length=50)
+    oppurtunity_rate = models.CharField(max_length=50)
+    working_environment = models.CharField(max_length=20)
+    management = models.CharField(max_length=20)
+    benefits_perks = models.CharField(max_length=20)
+    fecilities = models.CharField(max_length=20)
+    recommend_other = models.BooleanField()
+    salary_rate = models.CharField(max_length=20)
+    good_things = models.TextField(max_length=200)
+    challeneges = models.TextField(max_length=200)
+    company_summary = models.TextField(max_length=200)

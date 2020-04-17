@@ -30,10 +30,16 @@
 	<!-- Navigation -->
 	<nav class="navigation">
 		<ul class="nav" id="myDIV">
+		{% if token == 'yes' %}
+			<li><a href="#" class="click">Profile</a></li>
+			<li><a href="{% url 'create_job' %}" class="click">Announce Vacancy</a></li>
+			<li><a href="{% url 'employer' %}" class="click">Log out</a></li>
+		{% else %}
 				<li><a href="{% url 'employer_sign_up' %}" class = "click">Register</a></li>
 				<li><a href="{% url 'employer' %}" class="click">Log in</a></li>
-				<li><a href="{% url 'create_job' %}" class="click">Announce Vacancy</a></li>
 				<li><a href="{% url 'home' %}" class="click">Job Seeker Site</a></li>
+				
+		{% endif %}
 		</ul>
 	</nav>
 	<div class="clear"></div>

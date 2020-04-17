@@ -69,7 +69,7 @@
 				{% endif %}
 			{% endfor %}
 			{% if v_detail.has_next %}
-				<a class="pagination_action" href="?page={{v_detail.next_page_number}}">Next</a>
+				<a class="pagination_action" href="?page={{ v_detail.next_page_number}}">Next</a>
 				<a class="pagination_action" href="?page={{ v_detail.paginator.num_pages }}">Last &raquo;</a>
 			{% endif %}	
 			{% comment %} <span class="step-links">

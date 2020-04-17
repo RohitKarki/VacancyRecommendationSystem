@@ -12,6 +12,7 @@ from django.contrib import messages
 import requests, json, googlemaps
 import geopy.geocoders as geocoders 
 from geopy.geocoders import Nominatim
+from math import *
 from django.contrib.auth.hashers import make_password, check_password
 
 from rest_framework.status import (
@@ -44,6 +45,9 @@ def home(request, cond=None):
     page_obj = paginator.get_page(page_number)
     return render(request, 'home.html',{'v_detail': page_obj,'search_form': form, 'cond':cond})
 
+def home_logged_in(request):
+    return home(request, cond='yes')
+
 def signup(request):
     form = SignupForm()    
     return render(request, 'signup.html',{'signup_form': form})
@@ -52,16 +56,22 @@ def login(request):
     form = LoginForm()
     return render(request,'login.html',{'login_form':form})
 
+def company_review(request):
+    return render(request,'company_review.html',{'comapy_review_form': CompanyReviewForm(),'cond':'yes'})
+
 def employer_part(request):
     form = LoginForm()
     return render(request,'log_in_employer.html',{'login_form':form})
 
+def employer_logged_in(request):
+    return create_job(request, {'token':'yes'})
+
 def register_employer(request):  
         return render(request, 'sign_up_employer.html',{'signup_form': SignupFormEmployer()})     
 
-def create_job(request):
+def create_job(request, token='None'):
     form = VacancyAnnounceForm()
-    return render(request, 'vacancy_announcement.html',{'vacancy_announce_form': form})  
+    return render(request, 'vacancy_announcement.html',{'vacancy_announce_form': form, 'token':token})  
 
 def des (request, pk):
     # v = Vacancy_Detail.objects.get(id=pk)
@@ -213,6 +223,34 @@ class Search(APIView):
         else:
             return render(request, 'home.html',{'v_detail': filter2,'search_form': SearchForm()})
 
+@api_view(['GET','POST'])
+def add_vacancy_detail(request, token):
+    if request.method == 'POST':
+        try:
+            form = VacancyAnnounceForm(request.POST)
+            values = Vacancy_Detail(
+                company = token,
+                job_category = request.POST['catagories'],
+                job_title =request.POST['job_title'],
+                work_type = request.POST['work_type'],
+                payment_type = request.POST['payment_type'],
+                range_of_salary = request.POST['salary'],
+                plus_services = request.POST['plus_services'],
+                task_and_responsibilities = request.POST['responsibilities'],
+                qualification_and_experience = request.POST['qualifiactions'],
+                expiry_date = request.POST['end_date'],
+            )
+            serializer=VacancySerializer(data=request.data)
+            if serializer.is_valid():
+                values.save()
+                messages.success(request, "Register Successfully !") 
+                return redirect('create_job')
+            else:
+               message.info(request, 'Invalid values detected')
+               return render(request, 'vacancy_announcement.html',{'signup_form': form})    
+
+        except:  
+            return Response(status=status.HTTP_404_NOT_FOUND)
 
 @api_view(['GET','POST'])
 def user_detail(request):
@@ -222,23 +260,24 @@ def user_detail(request):
         # serializer = RegisterSerializer(obj , many = True)
         # return Response(serializer.data)
     
-    # hasssing the password
-    password = make_password(request.POST['email_password'])
 
-    values = Register_Detail(
-        full_name = request.POST['full_name'],
-        email = request.POST['email'],
-        email_password = password
-    )
     if request.method == 'POST':
         try:
-            form = SignupForm(request.POST);          
-            serializer = RegisterSerializer(data=request.data)
+            # hasssing the password
+            password = make_password(request.POST['email_password'])
+
+            values = Register_Detail(
+                full_name = request.POST['full_name'],
+                email = request.POST['email'],
+                email_password = password
+            )
+            form = SignupForm(request.POST)        
+            serializer=RegisterSerializer(data=request.data)
             if serializer.is_valid():
                 email = request.POST['email']
-                if(Register_Detail.objects.filter(email = email)):
+                if(Register_Detail.objects.get(email = email)):
                         messages.success(request, email + ' already exist!')    
-                        return redirect('signup')
+                        return render(request, 'signup.html',{'signup_form': form}) 
                 else:
                     values.save()
                     messages.success(request, "Register Successfully !")    
@@ -280,38 +319,40 @@ def employer_user_detail(request):
 
     if request.method == 'POST':
         try:
+            form = SignupFormEmployer(request.POST)   
             address = request.POST['company_address']
-            print('a')
             li=[]
             li = location_lat_lon(address) #call the function for address longitude and latitude
-            print('b')
-            form = SignupFormEmployer(request.POST)     
-            serializer = RegisterCompanySerializer(data=request.data)
-            # hasssing the password
-            password = make_password(request.POST['company_password'])
-            values = Register_Company_Detail(
-                company_name = request.POST['company_name'],
-                company_address = request.POST['company_address'],
-                company_contact = request.POST['company_contact'],
-                company_email = request.POST['company_email'],
-                company_password = password,
-                address_latitude = li[0],
-                address_longitude = li[1]
-            )
-            if serializer.is_valid():
-                email = request.POST['company_email']
-                print('a')
-                if(Register_Company_Detail.objects.filter(company_email = email)):
-                    print('b')
-                    messages.success(request, email + ' already exist!')    
-                    return redirect('employer_sign_up')
-                else:                
-                    values.save()
-                    messages.success(request, "Register Successfully !")    
-                    return redirect('employer_sign_up') 
-            else:
-                messages.success(request, "Email is not valid !")  
+            if li is None:
+                messages.success(request, "Location is not valid.Please enter the valid address.")  
                 return render(request, 'sign_up_employer.html',{'signup_form': form})  
+            else:  
+                serializer = RegisterCompanySerializer(data=request.data)
+                # hasssing the password
+                password = make_password(request.POST['company_password'])
+                values = Register_Company_Detail(
+                    company_name = request.POST['company_name'],
+                    company_address = request.POST['company_address'],
+                    company_contact = request.POST['company_contact'],
+                    company_email = request.POST['company_email'],
+                    company_password = password,
+                    address_latitude = li[0],
+                    address_longitude = li[1]
+                )
+                if serializer.is_valid():
+                    email = request.POST['company_email']
+                    print('a')
+                    if(Register_Company_Detail.objects.filter(company_email = email)):
+                        print('b')
+                        messages.success(request, email + ' already exist!')    
+                        return redirect('employer_sign_up')
+                    else:                
+                        values.save()
+                        messages.success(request, "Register Successfully !")    
+                        return redirect('employer_sign_up') 
+                else:
+                    messages.success(request, "Email is not valid !")  
+                    return render(request, 'sign_up_employer.html',{'signup_form': form})  
             
         except:
             return Response(status=status.HTTP_404_NOT_FOUND)
@@ -368,11 +409,32 @@ def location_lat_lon(address):
     # return (lat)
     
     non = Nominatim()
-    n=non.geocode(address)
-    li = [n.latitude, n.longitude]
-    print(li)
+    li = []
+    try:
+        n=non.geocode(address)
+        li = [n.latitude, n.longitude]
+        
+    except:
+        return None
     return li
 
+# @api_view(['GET','POST'])
+# def tri(request):
+#     print('a')
+#     print(distance_calculation(27.700769,85.300140,27.693298,85.281652))
+#     print('b')
+#     return None
+def distance_calculation(lat1,lon1,lat2,lon2): # calculate the distance between two points according to the geo location
+    # convert decimal degrees to radians 
+    lon1, lat1, lon2, lat2 = map(radians, [lon1, lat1, lon2, lat2])
+
+    # haversine formula 
+    dlon = lon2 - lon1 
+    dlat = lat2 - lat1 
+    a = sin(dlat/2)**2 + cos(lat1) * cos(lat2) * sin(dlon/2)**2
+    c = 2 * asin(sqrt(a)) 
+    r = 6371 # Radius of earth in 6371 kilometers. Use 3956 for miles
+    return c * r
 
 class Search_From_Skill_Location(APIView):
     def get(self,request,s,l):  
@@ -459,13 +521,17 @@ def verified_login(request):
 
     if request.method == 'POST': 
         email = request.POST['email']
-        obj = Register_Detail.objects.get(email = email)
+        try:
+            obj = Register_Detail.objects.get(email = email)
+        except Register_Detail.DoesNotExist:
+            messages.info(request, 'Email does not exist.')
+            return render(request,'login.html',{'login_form':form})
         confirmation_password = check_password(request.POST['email_password'],obj.email_password)
         print(confirmation_password)
         if(confirmation_password):            
-            return render(request,'home.html')
+            return home(request, cond='yes')
         else:
-            messages.info(request, 'Invalid email or password')
+            messages.info(request, 'Invalid password')
             return render(request,'login.html',{'login_form':form})
 
 def employer_verified_login(request):
@@ -473,14 +539,18 @@ def employer_verified_login(request):
 
     if request.method == 'POST': 
         email = request.POST['email']
-        obj = Register_Company_Detail.objects.get(company_email = email)
+        try:
+            obj = Register_Company_Detail.objects.get(company_email = email)
+        except Register_Company_Detail.DoesNotExist:
+            messages.info(request, 'Email does not exist.')
+            return render(request,'log_in_employer.html',{'login_form':form})
         confirmation_password = check_password(request.POST['email_password'],obj.company_password)
         print(confirmation_password)
         if(confirmation_password):            
-            return redirect('create_job')
+            return employer_logged_in(request)
         else:
-            messages.info(request, 'Invalid email or password')
-            return render(request,'login.html',{'login_form':form})
+            messages.info(request, 'Invalid password')
+            return render(request,'log_in_employer.html',{'login_form':form})
 
 # def registration(request):
     
@@ -528,23 +598,23 @@ def search(request):
         return render(request, 'home.html',{'v_detail': page_obj,'search_form': SearchForm()})
 
 
-from django.contrib.auth import login as django_login, logout as django_logout
-from rest_framework.authtoken.models import Token
-from rest_framework.authentication import TokenAuthentication
+# from django.contrib.auth import login as django_login, logout as django_logout
+# from rest_framework.authtoken.models import Token
+# from rest_framework.authentication import TokenAuthentication
 
 
-class LoginView(APIView):
-    def post(self, request):
-        serializer = LoginSerilizer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data["user"]
-        django_login(request, user)
-        token, created = Token.objects.get_or_create(user=user)
-        return Response({"token": token.key}, status=200)
+# class LoginView(APIView):
+#     def post(self, request):
+#         serializer = LoginSerilizer(data=request.data)
+#         serializer.is_valid(raise_exception=True)
+#         user = serializer.validated_data["user"]
+#         django_login(request, user)
+#         token, created = Token.objects.get_or_create(user=user)
+#         return Response({"token": token.key}, status=200)
 
-class LogoutView(APIView):
-    authentication_clasess = {TokenAuthentication}
+# class LogoutView(APIView):
+#     authentication_clasess = {TokenAuthentication}
 
-    def post(self, request):
-        django_logout(request)
-        return Response(status=204)
+#     def post(self, request):
+#         django_logout(request)
+#         return Response(status=204)

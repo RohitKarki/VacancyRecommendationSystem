@@ -8,7 +8,7 @@ from geopy.geocoders import Nominatim
 class VacancySerializer(serializers.ModelSerializer):
     class Meta:
         model = Vacancy_Detail
-        fields = '__all__'
+        fields = ['job_category','job_title','work_type','payment_type','payment_type','range_of_salary','plus_services','task_and_responsibilities','qualification_and_experience','expiry_date']
 
 class RegisterSerializer(serializers.ModelSerializer):
     class Meta:

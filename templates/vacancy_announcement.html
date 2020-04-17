@@ -15,7 +15,7 @@
 
 		
 		<div class="con-1">
-			<form id = "forms" action="{% url 'add_vacancy' %}" method="POST">
+			<form id = "forms" action="{% url 'announce_vacancy' %}" method="POST">
 				{% csrf_token %}
                 <h3>Job Category</h3></br>
 				{{ vacancy_announce_form.catagories }}

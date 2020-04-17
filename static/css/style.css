@@ -508,3 +508,19 @@ p{
 	font-family: bold;
 	cursor: pointer;
 }
+
+/* Company Review page */
+.radio{
+	/* text-align: left;
+    margin: initial;
+	padding-left: 34%;
+	list-style: none; */
+}
+.radio ul{
+	list-style-type: none;
+	
+}
+.radio ul li {
+	display: inline-block;
+	padding: 16px;
+}
