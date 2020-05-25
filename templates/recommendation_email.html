@@ -1,0 +1,14 @@
+{% autoescape off %}
+Hi Dear,
+
+{% for v in lis%}
+	Company name    : {{v.company.company_name}}
+    Company Address : {{v.company.company_address}}
+
+    Please click on the link below to see the detail of the given company:
+    http://127.0.0.1:8000/view_detail/{{ v.pk }}		
+
+{% endfor %}
+
+
+{% endautoescape %}

@@ -15,11 +15,24 @@
 
 		
 		<div class="con-1">
-			<form id = "forms" method="POST" action="{% url 'employer_user_detail' %}" >
+			<form method="post">
+    			{% csrf_token %}
+				<ul>
+    			{{ form.as_ul }}</br>
+				{% if messages %}
+				{% for message in messages %}
+					<div class="alert alert-danger" role="alert">
+						{{ message }}
+					</div>
+				{% endfor %}
+				{% endif %}
+				</br><h4>I accept all the agreement and policy of this company.</h4>
+				<a href="#"> </br>Please click here to see the agreement and policy. </a>
+				</ul></br>
+    			<button type="submit" class="main_button" id="button">Sign up</button>
+  			</form>
+			{% comment %} <form id = "forms" method="POST" action="{% url 'employer_user_detail' %}" >
 				{% csrf_token %}
-				{% comment %} <ul>
-				{{signup_form.as_ul}}
-				</ul></br> {% endcomment %}
 				{{ signup_form.}}
 				<br/>
 				{{ signup_form.company_email }}
@@ -45,7 +58,7 @@
 				{% endif %}
 				<br/> <br/>
 				<input name="send" type="submit" value="Register detail" class="main_button" id="button">
-			</form>
+			</form> {% endcomment %}
 		</div>
 
 		<!-- Page Content Ends   -->

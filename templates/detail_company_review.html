@@ -13,39 +13,44 @@
 	<article class="feature_wrapper">
 		<div class="view_detail">
             <div style="text-align: center">
-                <h2 style="font-size: 30px; background-color: rgb(26, 127, 194); margin: 4px auto; padding: 5px;">{{ v_detail.job_title }}</h2>
-                <h5>{{ v_detail.job_category }}</h5>
-                </br><h4> Organization : {{ v_detail.company }}</h4>
-                {{ v_detail.company.company_address }}
+                <h2 style="font-size: 30px; background-color: rgb(26, 127, 194); margin: 4px auto; padding: 5px;">{{ v_detail.company_name }}</h2>
+                <h4> Job Title : {{ v_detail.job_title }}</h4>
 
             <div>
                 
             <div><br/><br/>
             <div>
-                <h3> Qualification and Experience: </h3>
-                {{ v_detail.qualification_and_experience}}
+                <h3> Oppurtunity rate: </h3>
+                {{ v_detail.oppurtunity_rate}}
             <br/><br/>
             <div>
-            <h3> Responsibility: </h3>
-                {{ v_detail.task_and_responsibilities}}
+            <h3> Working environment: </h3>
+                {{ v_detail.working_environment}}
             <br/><br/>
-            <h3> Work Type: </h3>
-                {{ v_detail.work_type}}
+            <h3> Management: </h3>
+                {{ v_detail.management}}
             <br/><br/>
-            <h3> Payment Type: </h3>
-                {{ v_detail.payment_type}}
+            <h3> Benefits Perks: </h3>
+                {{ v_detail.benefits_perks}}
             <br/><br/>
-            <h3> Salary: </h3>
-                {{ v_detail.range_of_salary}}
+            <h3> Faclities Available: </h3>
+                {{ v_detail.facilities}}
             <br/><br/>
-            <h3> Additiinal Services: </h3>
-                {{ v_detail.plus_services}}
+            <h3> Reviewer is satisfy: </h3>
+                {{ v_detail.recommend_other}}
             <br/><br/>
-    	<div class="space">
-            <div class="wrapper">
-                <a href ="{% url 'apply_job' pk=v_detail.pk %}" ><button class="butt" ><h4>Apply for Job</h4></button></a>
-            </div>
-        </div>
+            <h3> Payment / Salary rate: </h3>
+                {{ v_detail.salary_rate}}
+            <br/><br/>
+            <h3> Good things about company: </h3>
+                {{ v_detail.good_things}}
+            <br/><br/>
+            <h3> Challenges on company: </h3>
+                {{ v_detail.challeneges}}
+            <br/><br/>
+            <h3> Short Summary about company: </h3>
+                {{ v_detail.company_summary}}
+            <br/><br/>                      
 		{% if messages %}
 			{% for message in messages %}
 				<div class="alert alert-danger" role="alert">
@@ -57,7 +62,11 @@
 	</article>
 	<!-- Feature Highlight ends -->
 
-
+    <div class="c-text container-9" style="padding-bottom: 54px;"> 
+        <div class="wrapper">
+            <a href="{% url 'company_review' %}"><button class="butt"><h4>Give Your Company Review</h4></button></a>
+        </div></br>
+	</div>
 
 
 	<!-- Latest Projects Section Starts -->

@@ -11,7 +11,7 @@
 {% block content%}
 <!-- Page Header -->
 	<section class="page_heading">
-		<h3 class="page-heading">LOG IN</h3>
+		<h3 class="page-heading">EDIT PROFILE</h3>
 	</section>
 	<!-- Page Header Ends -->
 
@@ -22,12 +22,12 @@
 
 		
 		<div class="con-1">
-			<form id = "forms" action="{% url 'login' %}" method="POST">
+			<form id = "forms" action="{% url 'edit_profile'%}" method="POST">
 				{% csrf_token %}
-				{{ login_form.email }}
-				<br/>
-				{{ login_form.email_password }}
-				<br/>
+                <ul>
+				{{ form.as_ul }}</br>
+                <h3 style="color:blue;">If you want to recommend then, tick the Recommendation, Otherwise untick it.</h3>
+				</ul></br>
 				{% if messages %}
 				{% for message in messages %}
 					<div class="alert alert-danger" role="alert">
@@ -35,8 +35,9 @@
 					</div>
 				{% endfor %}
 				{% endif %}
-				<br/> <br/>
-				<input name="send" type="submit" value="Log in" class="main_button" id="button">
+				<br/>
+
+				<input name="send" type="submit" value="Update" class="main_button" id="button">
 			</form>
 		</div>
 

@@ -1,0 +1,31 @@
+{% extends 'basic_page.html' %}
+{% load static %}
+
+{% block content%}
+<!-- Page Header -->
+<section class="page_heading">
+	<h3 class="page-heading">PROFILE</h3>
+</section>
+<!-- Page Header Ends -->
+
+<section class="page-container">
+
+	<!-- Page Content Starts -->
+	<br/><br/>
+	<div class="c-text container-9" style="float: none;">
+        <div class="detail" style="background-color: #0b3c5d; text-align: center; padding:5px">
+            <h2 style="font-size: 40px;  margin: 16px auto; padding: 13px;">Dear, {{user.profile.full_name}}</h2></br>
+            <h3>{{ user.email }}</h3>
+        </div></br>
+
+	</div>
+
+	<div class="clear"></div>
+
+	<div class="c-text container-9" style="padding-bottom: 54px;"> 
+        <div class="wrapper">
+            <a href="{% url 'edit_profile' %}"><button class="butt"><h4>Edit Profile</h4></button></a>
+        </div></br>
+	</div>
+
+{% endblock %}

@@ -12,7 +12,7 @@
 
         
         <div class="con-1">
-            <form id = "forms" action="#" method="POST">
+            <form id = "forms" action="{% url 'company_review_by_user'%}" method="POST">
                 {% csrf_token %}
                 <h3>Company Name</h3>
                 {{ comapy_review_form.company_name }}
@@ -33,7 +33,7 @@
                 <br/>
                 <h3>How is the facilities of company?</h3>
                 <div class="radio">
-                {{ comapy_review_form.fecilities }}
+                {{ comapy_review_form.facilities }}
                 </div> 
                 <br/>
                 <h3>How much you get oppurtunity in this company?</h3>

@@ -35,13 +35,14 @@
 	<!-- Feature Highlights Start -->
 	<article class="feature_wrapper">
 		<div class="feature_container">
-			<h2 style="font-size: 40px; background-color: #0b3c5d; margin: 16px auto; padding: 13px;">Avialable Jobs</h2>
+			<h2 style="font-size: 40px; background-color: #0b3c5d; margin: 16px auto; padding: 13px;text-align: center;">Avialable Jobs</h2>
 			{% comment %} {% if not v_detail %}
 			<br/>
 				<h2 style=" background-color: red;">No any job found.</h2>
 			{% endif %} {% endcomment %}
-			
+			<div class="feature-layout">
 			{% for v in v_detail%}
+			
 				<a href="{% url 'description' pk=v.pk %}"><div class="feature">
 					{% if v.urgent %}
 					<p class="emergency">Urgent<p>
@@ -55,6 +56,7 @@
 			{% empty %}
 				<h2 style=" background-color: red;">No any job found.</h2>
 			{% endfor %}	
+			</div>
 		</div>
 		<div class="pagination">
 			{% if v_detail.has_previous %}

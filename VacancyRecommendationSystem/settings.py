@@ -27,7 +27,6 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -40,6 +39,16 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'allauth',
+    'django.contrib.sites',
+    'django_crontab',
+    
+]
+SITE_ID=1 
+AUTH_USER_MODEL = 'rojgarr.User' # changes the built in user model to ours
+
+CRONJOBS = [
+    ('* * * * *', 'rojgarr.cron.cron_job'),
 ]
 
 MIDDLEWARE = [
@@ -50,6 +59,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.contrib.sites.middleware.CurrentSiteMiddleware",
+    
 ]
 
 ROOT_URLCONF = 'VacancyRecommendationSystem.urls'
@@ -69,9 +80,8 @@ TEMPLATES = [
         },
     },
 ]
-
 WSGI_APPLICATION = 'VacancyRecommendationSystem.wsgi.application'
-
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Database
 # https://docs.djangoproject.com/en/2.0/ref/settings/#databases
@@ -91,6 +101,10 @@ DATABASES = {
     }
 }
 
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    # 'allauth.account.auth_backends.AuthenticationBackend',
+)
 
 # Password validation
 # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -153,3 +167,9 @@ STATIC_ROOT = os.path.join(BASE_DIR,'assets')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'np01cp4a170148@islingtoncollege.edu.np'
+EMAIL_HOST_PASSWORD = 'uzfszewrochgbjuc'
+EMAIL_PORT = 587

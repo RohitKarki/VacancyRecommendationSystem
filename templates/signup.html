@@ -1,6 +1,15 @@
 {% extends 'basic_page.html' %}
 {% load staticfiles%}
 
+{% comment %} {% block content %}
+  <h2>Sign up</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Sign up</button>
+  </form>
+{% endblock %} {% endcomment %}
+
 {% block content%}
 
 
@@ -17,7 +26,16 @@
 
 		
 		<div class="con-1">
-			<form id = "forms" action="{% url 'register' %}" method="POST">
+			<form method="post">
+    			{% csrf_token %}
+				<ul>
+    			{{ form.as_ul }}</br>
+				<h4>I accept all the agreement and policy of this company.</h4>
+				<a href="#"> </br>Please click here to see the agreement and policy. </a>
+				</ul></br>
+    			<button type="submit" class="main_button" id="button">Sign up</button>
+  			</form>
+			{% comment %} <form id = "forms" action="{% url 'signup' %}" method="POST">
 				{% csrf_token %}
 				{{ signup_form.full_name}}
 				<br/>
@@ -34,7 +52,7 @@
 				{% endif %}
 				<br/> <br/>
 				<input name="send" type="submit" value="Register detail" class="main_button" id="button">
-			</form>
+			</form> {% endcomment %}
 		</div>
 
 		<!-- Page Content Ends   -->

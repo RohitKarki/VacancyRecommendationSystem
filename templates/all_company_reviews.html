@@ -2,8 +2,66 @@
 {% load static %}
 
 {% block content%}
-	<section class="page_heading">
-		<h3 class="page-heading">Company Review</h3>
-	</section>
+	{% comment %} <section class="page_heading">
+		<h3 class="page-heading" style="font-size: 34px;">Companies And their Reviews</h3>
+	</section> {% endcomment %}
+    	<!-- Feature Highlights Start -->
+	<article class="feature_wrapper">
+		<div class="feature_container">
+			{% comment %} <h2 style="font-size: 40px; background-color: #0b3c5d; margin: 16px auto; padding: 13px;text-align: center;">Avialable Jobs</h2> {% endcomment %}
+			{% comment %} {% if not v_detail %}
+			<br/>
+				<h2 style=" background-color: red;">No any job found.</h2>
+			{% endif %} {% endcomment %}
+			<div class="feature-layout" style = "padding: 16px;">
+			{% for v in v_detail%}
+				<a href="{% url 'description_comapny_review' pk=v.pk %}"><div class="feature">
+					<p>Company Name : {{v.company_name}}</p>
+					<p>Job Title : {{v.job_title}}</p>
+				</div></a>	
+			{% empty %}
+				<h2 style=" background-color: red;">No any company review found.</h2>
+			{% endfor %}	
+			</div>
+		</div>
+		<div class="pagination">
+			{% if v_detail.has_previous %}
+				<a class="pagination_action" href="?page=1">&laquo; First</a>
+				<a class="pagination_action" href="?page={{ v_detail.previous_page_number }}">Previous</a>
+			{% endif %}
+			{% for num in v_detail.paginator.page_range %}
+				{% if v_detail.number == num %}
+					<span class="pagination_number pagination_current" >{{ num }} </span>
+				{% elif num > v_detail.number|add:'-3' and num < v_detail.number|add:'3' %}
+					<span class="pagination_number">{{ num }}</span>
+				{% endif %}
+			{% endfor %}
+			{% if v_detail.has_next %}
+				<a class="pagination_action" href="?page={{ v_detail.next_page_number}}">Next</a>
+				<a class="pagination_action" href="?page={{ v_detail.paginator.num_pages }}">Last &raquo;</a>
+			{% endif %}	
+			{% comment %} <span class="step-links">
+				{% if page_obj.has_previous %}
+					<a href="?page=1">&laquo; First</a>
+					<a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+				{% endif %}
+
+				<span class="current" style="font-size = 10px;">
+					{{ page_obj.number }} <strong > to </strong> {{ page_obj.paginator.num_pages }}.
+				</span>
+
+				{% if page_obj.has_next %}
+					<a href="?page={{ page_obj.next_page_number }}">Next</a>
+					<a href="?page={{ page_obj.paginator.num_pages }}">Last &raquo;</a>
+				{% endif %}
+			</span> {% endcomment %}
+		</div>
+	</article>
+	<!-- Feature Highlight ends -->
+    <div class="c-text container-9" style="padding-bottom: 54px;"> 
+        <div class="wrapper">
+            <a href="{% url 'company_review' %}"><button class="butt"><h4>Give Your Company Review</h4></button></a>
+        </div></br>
+	</div>
 
 {% endblock %}

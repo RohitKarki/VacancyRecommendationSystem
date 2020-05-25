@@ -31,16 +31,17 @@
 		<ul class="nav" id="myDIV">
 				{% if cond == 'yes' %}
 					<li><a href="{% url 'log_in_home' %}"  onclick="action()">Home</a></li>
-					<li><a href="{% url 'company_review' %}">Company Review</a></li>
+					<li><a href="{% url 'all_company_reviews' %}">Company Review</a></li>
 					<li><a href="#">About Us</a></li>			
 					<li><a href="#">Support</a></li>
-					<li><a href="#">{{ fullname }}</a></li>
-					<li><a href="{% url 'login' %}" class="click">Log out</a></li>
+					<li><a href="{% url 'user_profile' %}" style="color:White; font-size:18px"> Hello, {{user.profile.full_name}}</a></li>
+					<li><a href="{% url 'logout_employe' %}" class="click">Log out</a></li>
 
 				{% else %}
 					<li><a href="{% url 'home' %}"  onclick="action()">Home</a></li>
 					<li><a href="about-me.html">About Us</a></li>			
 					<li><a href="achievements.html">Support</a></li>
+					<li><a href="{% url 'all_company_reviews' %}">Company Review</a></li>
 					<li><a href="{% url 'signup' %}" class = "click">Register</a></li>
 					<li><a href="{% url 'login' %}" class="click">Log in</a></li>
 					<li><a href="{% url 'employer' %}" class="click">Employer Site</a></li>

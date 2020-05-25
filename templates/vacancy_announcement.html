@@ -15,7 +15,23 @@
 
 		
 		<div class="con-1">
-			<form id = "forms" action="{% url 'announce_vacancy' %}" method="POST">
+			<form id = "forms" action="{% url 'announce_vacancy'%}" method="POST">
+				{% csrf_token %}
+                <ul>
+				{{ form.as_ul }}</br>
+				</ul></br>
+				{% if messages %}
+				{% for message in messages %}
+					<div class="alert alert-danger" role="alert">
+						{{ message }}
+					</div>
+				{% endfor %}
+				{% endif %}
+				<br/>
+
+				<input name="send" type="submit" value="Announce it !" class="main_button" id="button">
+			</form>
+			{% comment %} <form id = "forms" action="{% url 'announce_vacancy' %}" method="POST">
 				{% csrf_token %}
                 <h3>Job Category</h3></br>
 				{{ vacancy_announce_form.catagories }}
@@ -25,6 +41,9 @@
 				<br/>
                 <h3>Work Type</h3></br>
 				{{ vacancy_announce_form.work_type }}
+				<br/>
+                <h3>Education Level</h3></br>
+				{{ vacancy_announce_form.education }}
 				<br/>
                 <h3>Payment Type</h3></br>
 				{{ vacancy_announce_form.payment_type }}
@@ -53,7 +72,7 @@
 				{% endif %}
 				<br/> <br/>
 				<input name="send" type="submit" value="Announce it !" class="main_button" id="button">
-			</form>
+			</form> {% endcomment %}
 		</div>
 
 		<!-- Page Content Ends   -->

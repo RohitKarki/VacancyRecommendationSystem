@@ -12,7 +12,7 @@
 
         
         <div class="con-1">
-            <form id = "forms" action="{% url 'employer_verified_login' %}" method="POST">
+            <form id = "forms" action="{% url 'employer_logged_in' %}" method="POST">
                 {% csrf_token %}
                 {{ login_form.email }}
                 <br/>

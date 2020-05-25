@@ -31,9 +31,9 @@
 	<nav class="navigation">
 		<ul class="nav" id="myDIV">
 		{% if token == 'yes' %}
-			<li><a href="#" class="click">Profile</a></li>
-			<li><a href="{% url 'create_job' %}" class="click">Announce Vacancy</a></li>
-			<li><a href="{% url 'employer' %}" class="click">Log out</a></li>
+			<li><a href="#" style="color:White; font-size:18px"> Hello, {{ user.register_company_detail.company_name }}</a></li>
+			<li><a href="{% url 'announce_vacancy' %}" class="click">Announce Vacancy</a></li>
+			<li><a href="{% url 'logout_employer' %}" class="click">Log out</a></li>
 		{% else %}
 				<li><a href="{% url 'employer_sign_up' %}" class = "click">Register</a></li>
 				<li><a href="{% url 'employer' %}" class="click">Log in</a></li>

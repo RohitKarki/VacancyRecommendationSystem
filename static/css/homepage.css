@@ -8,7 +8,6 @@
 .feature_wrapper
 {
 	width: 100%;
-	text-align: center;
 
 }
 
@@ -22,8 +21,25 @@
 
 .feature_container a
 {
+   
+
 	text-decoration: none;
 	
+	
+}
+.feature-layout a{
+
+	background-color: rgb(107, 102, 102);
+	display: block;
+	width: 25%;
+	padding: 20px;
+	margin: 0px 10px 10px 10px;
+	
+}
+.feature-layout a:hover{
+	background-color: rgb(26, 127, 194);
+	background-size: 1cm;
+	font-family: bold;
 }
 .emergency
 {
@@ -32,16 +48,9 @@
 }
 .feature
 {
-    margin-left: 20px;
-    width: 44%;
-	height: 100%;	
-    background-color: rgb(107, 102, 102);
-    color: #fff;
-    font-size: 16px;
-    text-align: center;
-    vertical-align: middle;
-    margin: 12px auto;
-    padding: 1%;
+	width: 100%;
+	color: #fff;
+
 }
 .page_heading_index{
 	width: 100%;
@@ -64,7 +73,6 @@
 .latest_projects_wrapper
 {
 	padding:25px;
-	text-align: center;
 }
 
 .project_thumb_wrapper
@@ -74,9 +82,17 @@
 	padding: 10px 15px;
 	margin-top: 20px;
 	width:20%;
-
+	margin: 10px;
 }
-
+.feature-layout{
+	flex-wrap: wrap;
+	box-sizing: border-box;
+	display: flex;
+	justify-content: space-around;
+}
+.feature-layout .feature p{
+	padding: 2px;
+}
 .page_heading
 {
 	/* text-align: center; */
@@ -103,6 +119,8 @@
 {
 	width: 100%;
 	text-align: center;
+	display: flex;
+    justify-content: space-around;
 }
 
 .page_heading_home
