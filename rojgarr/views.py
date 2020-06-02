@@ -56,6 +56,7 @@ from django.core.paginator import Paginator
 
 def home(request, cond=None): # cond is the flag for change the menu bar of authenticate and non authenticate person
     try:
+
         queryset = Vacancy_Detail.objects.select_related('company')
         obj1 = []
         for i in queryset:
@@ -82,7 +83,7 @@ def home(request, cond=None): # cond is the flag for change the menu bar of auth
             if request.user.employe:
                 return render(request, 'home.html',{'v_detail': page_obj,'search_form': SearchForm(request.POST), 'cond':'yes'})
             else: # if employer
-                return create_job(request) # call the create job function and this times its a front page for authorize user
+                return render(request,'vacancy_announcement.html',{'form':VacancyAnnounceForm(), 'token':'yes'}) # call the create job function and this times its a front page for authorize user
     
     except Vacancy_Detail.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)  
@@ -190,6 +191,7 @@ def login_employer(request):
         email = request.POST['email']
         password = request.POST['email_password']
         user = authenticate_user(email=email, password=password)
+        print(user)
         if user is not None:
             if user.employer:
                 login(request, user)
@@ -243,6 +245,7 @@ def register_employer(request):
                 )
                 email.send() # dend email
                 # user.email_user(subject, message)
+                
                 return redirect('account_activation_sent') # redirect the activation_email_page
                 # email = form.cleaned_data.get('email')
                 # raw_password = form.cleaned_data.get('password1')
@@ -273,12 +276,16 @@ def activate(request, uidb64, token):
     if user is not None and account_activation_token.check_token(user, token): # condition the permission after token verify user
         user.active = True # user is activated after click the link
         user.save() # savte the activation on datbase
-        # login(request, user)
-        return redirect('home') # redirect to the home page
+        login(request, user)
+        if request.user.employe:
+            return redirect('home') # redirect to the home page
+        else:
+            return redirect('announce_vacancy')
     else: # after code is wrong 
         return render(request, 'account_activation_invalid.html') 
 
 #  function to direct the form for vacancy announcement
+@login_required
 def create_job(request):
     try:
         form = VacancyAnnounceForm()
@@ -297,6 +304,7 @@ def logout_employe(request):
     return redirect('home') 
 
 # function to redirect the user profile:
+@login_required
 def user_profile(request):
     try:
         if request.user.employe:
@@ -307,6 +315,7 @@ def user_profile(request):
         return Response(status=status.HTTP_404_NOT_FOUND)  
 
 # function to edit the profile of employee
+@login_required
 def edit_profile(request):
     try:
         if request.method == 'POST':
@@ -378,6 +387,7 @@ def des (request, pk):
         return Response(status=status.HTTP_404_NOT_FOUND)    
 
 # function to the vacancy detail 
+@login_required
 @api_view(['GET','POST'])
 def add_vacancy_detail(request):
     if request.method == 'POST':
@@ -499,6 +509,7 @@ def search(request):
                 return create_job(request)
 
 # function to apply from the user profile
+@login_required
 def confirmation_to_apply(request, pk):
     
     if not request.user.is_authenticated or not request.user.employe:
@@ -580,10 +591,12 @@ def all_company_reviews(request):
         if not request.user.is_authenticated:
             return render(request, 'all_company_reviews.html',{'v_detail': page_obj, 'cond': None})
         else:
-
+            print(request.user.employe)
             # check the employe or employe
             if request.user.employe:
                 return render(request, 'all_company_reviews.html',{'v_detail': page_obj, 'cond':'yes'})
+            else:
+                return render(request,'vacancy_announcement.html',{'form':VacancyAnnounceForm(), 'token':'yes'})
     
     except:
         return Response(status=status.HTTP_404_NOT_FOUND)  
@@ -609,6 +622,7 @@ def company_review(request):
         return Response(status=status.HTTP_404_NOT_FOUND)  
 
 # function to save the company review given by the user
+@login_required
 def company_review_by_user(request):  
     try:
         if request.method == 'POST':
@@ -638,6 +652,7 @@ def company_review_by_user(request):
         return Response(status=status.HTTP_404_NOT_FOUND)  
 
 
+# def forget_password(request):
 
 
 

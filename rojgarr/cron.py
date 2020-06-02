@@ -81,7 +81,8 @@ def refine_expire_vacancies():
 # function which is start to sehedule the work automaticallly after server started
 def start():
     scheduler = BackgroundScheduler() # background schedular help the shedule function run on background
-    scheduler.add_job(comparing, 'interval', minutes=30) # set the  comparing function on shedule accordinf minutes and repated on its interval
-    scheduler.add_job(refine_expire_vacancies, 'interval', minutes=30) # set the refine_expry_function on interval to do
+    scheduler.add_job(comparing, 'interval', minutes=1440) # set the  comparing function on shedule accordinf minutes and repated on its interval
+    scheduler.add_job(refine_expire_vacancies, 'interval', minutes=1440) # set the refine_expry_function on interval to do
     scheduler.start() # recursive the same function for resheduling
+    
     

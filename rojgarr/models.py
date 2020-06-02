@@ -206,10 +206,11 @@ class Company_Review(models.Model):
     challeneges = models.TextField(max_length=200)
     company_summary = models.TextField(max_length=200)
 
+# models class for add advertisement
 class Advertisement_Detail(models.Model):
     advertiser_name = models.CharField(max_length=50)
     link = models.CharField(max_length=60)
-    image = models.ImageField(upload_to=None, height_field=None, width_field=None, max_length=None)
+    image = models.ImageField(upload_to='pics', height_field=None, width_field=None, max_length=None)
     short_description = models.CharField(max_length= 200)
     date_added = models.DateTimeField(default=timezone.now)
 
